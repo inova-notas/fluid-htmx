@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="emerald">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{{ page_title | default: "Home" }} - {{ app_name | default: "FluidHtmx DaisyUI" }}</title>
+    <link rel="stylesheet" href="/css/app.css" />
+</head>
+<body class="min-h-screen flex flex-col bg-base-200">
+
+    <div class="navbar bg-base-100 shadow-sm">
+        <div class="navbar-start">
+            <a class="btn btn-ghost text-xl" href="/">{{ app_name | default: "FluidHtmx DaisyUI" }}</a>
+        </div>
+        <div class="navbar-end">
+            {% for item in nav_items %}
+            <a class="btn btn-ghost {% if item.active %}btn-active{% endif %}"
+               href="{{ item.url }}"
+               hx-get="{{ item.url }}"
+               hx-target="#main-content"
+               hx-swap="innerHTML"
+               hx-push-url="true">
+                {{ item.label }}
+            </a>
+            {% endfor %}
+        </div>
+    </div>
+
+    <main id="main-content" class="flex-1">
+        {{ content }}
+    </main>
+
+    <footer class="footer footer-center bg-base-100 text-base-content p-4">
+        <aside>
+            <p>Built with FluidHtmx + DaisyUI + HTMX &mdash; {{ current_year }}</p>
+            <p class="text-xs opacity-50">Rendered in {{ render_time_ms }}ms</p>
+        </aside>
+    </footer>
+
+    {% hx_script %}
+</body>
+</html>

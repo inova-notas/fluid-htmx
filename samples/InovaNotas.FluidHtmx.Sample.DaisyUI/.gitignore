@@ -1,0 +1,6 @@
+# Downloaded DaisyUI standalone bundles (fetched at build time)
+Styles/daisyui.mjs
+Styles/daisyui-theme.mjs
+
+# Generated Tailwind CSS output
+wwwroot/css/app.css

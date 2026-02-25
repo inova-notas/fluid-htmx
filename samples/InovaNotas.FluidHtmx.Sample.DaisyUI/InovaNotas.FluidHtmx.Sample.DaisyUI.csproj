@@ -1,0 +1,24 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+    <PropertyGroup>
+        <TargetFramework>net10.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <RootNamespace>InovaNotas.FluidHtmx.Sample.DaisyUI</RootNamespace>
+        <TailwindVersion>v4.1.8</TailwindVersion>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\..\src\InovaNotas.FluidHtmx\InovaNotas.FluidHtmx.csproj" />
+    </ItemGroup>
+
+    <Target Name="DownloadDaisyUI" BeforeTargets="TailwindBuild"
+            Condition="!Exists('Styles/daisyui.mjs')">
+        <Exec Command="curl -sLo Styles/daisyui.mjs https://github.com/saadeghi/daisyui/releases/latest/download/daisyui.mjs" />
+        <Exec Command="curl -sLo Styles/daisyui-theme.mjs https://github.com/saadeghi/daisyui/releases/latest/download/daisyui-theme.mjs" />
+    </Target>
+
+    <Target Name="TailwindBuild" BeforeTargets="BeforeBuild">
+        <Exec Command="dotnet tool restore" />
+        <Exec Command="dotnet tool run tailwindcss build -t $(TailwindVersion) -m -i Styles/app.css -o wwwroot/css/app.css" />
+    </Target>
+</Project>

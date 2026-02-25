@@ -1,0 +1,17 @@
+<div class="hero min-h-[60vh] bg-base-100">
+    <div class="hero-content text-center">
+        <div class="max-w-md">
+            <h1 class="text-5xl font-bold">FluidHtmx + DaisyUI</h1>
+            <p class="py-6">
+                A sample app showcasing build-time Tailwind CSS with DaisyUI components
+                and HTMX-powered interactivity &mdash; no Node.js required.
+            </p>
+            {% hx_button "/partials/features", class: "btn btn-primary", method: "get", target: "#feature-cards", swap: "innerHTML" %}
+                Load Features
+            {% endhx_button %}
+        </div>
+    </div>
+</div>
+
+<div id="feature-cards" class="container mx-auto px-4 py-8">
+</div>

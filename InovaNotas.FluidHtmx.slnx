@@ -1,0 +1,12 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/InovaNotas.FluidHtmx/InovaNotas.FluidHtmx.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/InovaNotas.FluidHtmx.Tests/InovaNotas.FluidHtmx.Tests.csproj" />
+  </Folder>
+  <Folder Name="/samples/">
+    <Project Path="samples/InovaNotas.FluidHtmx.Sample/InovaNotas.FluidHtmx.Sample.csproj" />
+    <Project Path="samples/InovaNotas.FluidHtmx.Sample.DaisyUI/InovaNotas.FluidHtmx.Sample.DaisyUI.csproj" />
+  </Folder>
+</Solution>

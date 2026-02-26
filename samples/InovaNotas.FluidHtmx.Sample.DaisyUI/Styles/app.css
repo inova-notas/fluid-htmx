@@ -1,6 +1,7 @@
 @import "tailwindcss";
 
 @source not "./daisyui{,*}.mjs";
+@source "../Templates/**/*.liquid";
 
 @plugin "./daisyui.mjs"{
     themes: dark --default;

@@ -8,4 +8,12 @@ public class AssetOptions
     public string OutputCss { get; set; } = "wwwroot/css/app.css";
     public bool DaisyUIEnabled { get; set; }
     public List<string> DaisyUIThemes { get; set; } = [];
+
+    public AssetOptions EnableTailwind(string? version = null)
+    {
+        TailwindEnabled = true;
+        if (version is not null)
+            TailwindVersion = version;
+        return this;
+    }
 }

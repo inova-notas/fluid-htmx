@@ -3,12 +3,12 @@ using System.Text.Encodings.Web;
 using Fluid;
 using Fluid.Ast;
 using Fluid.Values;
+using InovaNotas.FluidHtmx.Assets;
 
 namespace InovaNotas.FluidHtmx.Htmx.Tags;
 
 public static class HtmxTagsRegistration
 {
-    private const string DefaultHtmxVersion = "2.0.4";
     private const string DefaultTarget = "#main-content";
     private const string DefaultSwap = "innerHTML";
 
@@ -22,14 +22,15 @@ public static class HtmxTagsRegistration
         RegisterHxSwapOob(parser);
         RegisterCsrfToken(parser);
         RegisterHxIndicator(parser);
+        RegisterAssetCss(parser);
+        RegisterAssetJs(parser);
     }
 
     private static void RegisterHxScript(HtmxFluidParser parser)
     {
         parser.RegisterEmptyTag("hx_script", static async (writer, encoder, context) =>
         {
-            var version = GetContextString(context, "htmx_version") ?? DefaultHtmxVersion;
-            await writer.WriteAsync($"<script src=\"https://unpkg.com/htmx.org@{version}\"></script>");
+            await writer.WriteAsync("<script src=\"/js/htmx.min.js\"></script>");
             return Completion.Normal;
         });
     }
@@ -163,6 +164,42 @@ public static class HtmxTagsRegistration
             await writer.WriteAsync("<span class=\"htmx-indicator\"><span class=\"loading loading-spinner\"></span></span>");
             return Completion.Normal;
         });
+    }
+
+    private static void RegisterAssetCss(HtmxFluidParser parser)
+    {
+        parser.RegisterParserTag("asset_css", parser.ArgumentsListParser,
+            static async (args, writer, encoder, context) =>
+        {
+            var p = new TagParams(args, context);
+            var path = await p.RequirePositional();
+            var resolved = ResolveAssetPath(context, path);
+
+            await writer.WriteAsync($"<link rel=\"stylesheet\" href=\"{Enc(resolved)}\" />");
+            return Completion.Normal;
+        });
+    }
+
+    private static void RegisterAssetJs(HtmxFluidParser parser)
+    {
+        parser.RegisterParserTag("asset_js", parser.ArgumentsListParser,
+            static async (args, writer, encoder, context) =>
+        {
+            var p = new TagParams(args, context);
+            var path = await p.RequirePositional();
+            var resolved = ResolveAssetPath(context, path);
+
+            await writer.WriteAsync($"<script src=\"{Enc(resolved)}\"></script>");
+            return Completion.Normal;
+        });
+    }
+
+    private static string ResolveAssetPath(TemplateContext context, string path)
+    {
+        var manifestValue = context.GetValue("_asset_manifest");
+        if (manifestValue is not NilValue && !manifestValue.IsNil() && manifestValue.ToObjectValue() is AssetManifest manifest)
+            return manifest.Resolve(path);
+        return path;
     }
 
     private static async Task RenderStatementsAsync(

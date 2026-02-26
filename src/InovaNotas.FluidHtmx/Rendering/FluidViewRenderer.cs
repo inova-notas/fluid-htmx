@@ -1,4 +1,5 @@
 using Fluid;
+using InovaNotas.FluidHtmx.Assets;
 using InovaNotas.FluidHtmx.Configuration;
 using InovaNotas.FluidHtmx.Exceptions;
 using InovaNotas.FluidHtmx.Htmx;
@@ -17,19 +18,22 @@ public class FluidViewRenderer : IViewRenderer
     private readonly TemplateLocator _locator;
     private readonly IServiceProvider _serviceProvider;
     private readonly ILogger<FluidViewRenderer> _logger;
+    private readonly AssetManifest? _assetManifest;
 
     public FluidViewRenderer(
         IOptions<FluidHtmxOptions> options,
         TemplateCache cache,
         TemplateLocator locator,
         IServiceProvider serviceProvider,
-        ILogger<FluidViewRenderer> logger)
+        ILogger<FluidViewRenderer> logger,
+        AssetManifest? assetManifest = null)
     {
         _options = options.Value;
         _cache = cache;
         _locator = locator;
         _serviceProvider = serviceProvider;
         _logger = logger;
+        _assetManifest = assetManifest;
 
         _options.TemplateOptions.FileProvider = _locator.FileProvider;
     }
@@ -89,11 +93,12 @@ public class FluidViewRenderer : IViewRenderer
 
     private async Task<string> RenderTemplateAsync(string templateName, object? model)
     {
-        var template = _options.EnableHotReload
-            ? await ParseTemplateAsync(templateName)
-            : await _cache.GetOrAddAsync(templateName, () => ParseTemplateAsync(templateName));
+        var template = await _cache.GetOrAddAsync(templateName, () => ParseTemplateAsync(templateName));
 
         var context = new TemplateContext(model ?? new { }, _options.TemplateOptions);
+
+        if (_assetManifest is not null)
+            context.SetValue("_asset_manifest", _assetManifest);
 
         if (model is Dictionary<string, object> dict)
         {

@@ -1,3 +1,4 @@
+using InovaNotas.FluidHtmx.Assets;
 using InovaNotas.FluidHtmx.Exceptions;
 using InovaNotas.FluidHtmx.Htmx.Filters;
 using InovaNotas.FluidHtmx.Htmx.Tags;
@@ -97,6 +98,24 @@ public class FluidHtmxBuilder
             opts.InvokeDefaultLayout = _options.InvokeDefaultLayout;
             opts.Parser = _options.Parser;
         });
+
+        _services.Configure<AssetOptions>(opts =>
+        {
+            opts.TailwindEnabled = _options.Assets.TailwindEnabled;
+            opts.TailwindVersion = _options.Assets.TailwindVersion;
+            opts.InputCss = _options.Assets.InputCss;
+            opts.OutputCss = _options.Assets.OutputCss;
+            opts.DaisyUIEnabled = _options.Assets.DaisyUIEnabled;
+            opts.DaisyUIThemes = _options.Assets.DaisyUIThemes;
+        });
+
+        _services.AddSingleton<AssetManifest>();
+
+        if (_options.Assets.TailwindEnabled)
+            _services.AddHostedService<TailwindWatchService>();
+
+        if (_options.EnableHotReload)
+            _services.AddHostedService<TemplateFileWatcher>();
 
         _services.AddSingleton<TemplateCache>();
         _services.AddSingleton<TemplateLocator>();

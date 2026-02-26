@@ -4,7 +4,7 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
         <RootNamespace>InovaNotas.FluidHtmx.Sample.DaisyUI</RootNamespace>
-        <TailwindVersion>v4.1.8</TailwindVersion>
+        <TailwindVersion>v4.2.0</TailwindVersion>
     </PropertyGroup>
 
     <ItemGroup>

@@ -10,6 +10,7 @@ builder.Services.AddFluidHtmx(fluid =>
 {
     fluid.TemplatesPath("Templates");
     fluid.EnableHotReload(builder.Environment.IsDevelopment());
+    fluid.Assets(assets => assets.EnableTailwind("v4.2.0"));
     fluid.DefaultLayout<DaisyLayout>();
     fluid.AddLayout<DaisyLayout, DaisyLayoutDataProvider>();
 });
@@ -23,6 +24,8 @@ app.Use(async (context, next) =>
 });
 
 app.UseStaticFiles();
+
+app.UseHtmx();
 
 app.MapGet("/", (IViewRenderer view, HttpContext ctx) =>
     view.RenderAsync(ctx, "pages/home/index"));

@@ -1,7 +1,12 @@
 using Fluid;
 using FluentAssertions;
+using InovaNotas.FluidHtmx.Assets;
 using InovaNotas.FluidHtmx.Htmx;
 using InovaNotas.FluidHtmx.Htmx.Tags;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.FileProviders;
+using Microsoft.Extensions.Hosting;
+using NSubstitute;
 using Xunit;
 
 namespace InovaNotas.FluidHtmx.Tests.Htmx;
@@ -33,16 +38,7 @@ public class HtmxTagsTests
     {
         var result = await RenderAsync("{% hx_script %}");
 
-        result.Should().Contain("<script src=\"https://unpkg.com/htmx.org@2.0.4\"></script>");
-    }
-
-    [Fact]
-    public async Task HxScript_UsesCustomVersion()
-    {
-        var result = await RenderAsync("{% hx_script %}", ctx =>
-            ctx.SetValue("htmx_version", "1.9.0"));
-
-        result.Should().Contain("htmx.org@1.9.0");
+        result.Should().Contain("<script src=\"/js/htmx.min.js\"></script>");
     }
 
     // ── hx_link ──
@@ -222,5 +218,75 @@ public class HtmxTagsTests
 
         result.Should().Contain("class=\"htmx-indicator\"");
         result.Should().Contain("loading-spinner");
+    }
+
+    // ── asset_css ──
+
+    [Fact]
+    public async Task AssetCss_RendersLinkTag()
+    {
+        var result = await RenderAsync("{% asset_css \"/css/app.css\" %}");
+
+        result.Should().Contain("<link rel=\"stylesheet\" href=\"/css/app.css\" />");
+    }
+
+    [Fact]
+    public async Task AssetCss_WithManifest_RendersVersionedPath()
+    {
+        var content = "body { color: red; }"u8.ToArray();
+        var fileInfo = Substitute.For<IFileInfo>();
+        fileInfo.Exists.Returns(true);
+        fileInfo.PhysicalPath.Returns("/wwwroot/css/app.css");
+        fileInfo.CreateReadStream().Returns(_ => new MemoryStream(content));
+
+        var fileProvider = Substitute.For<IFileProvider>();
+        fileProvider.GetFileInfo("css/app.css").Returns(fileInfo);
+
+        var env = Substitute.For<IWebHostEnvironment>();
+        env.EnvironmentName.Returns(Environments.Production);
+        env.WebRootFileProvider.Returns(fileProvider);
+
+        var manifest = new AssetManifest(env);
+
+        var result = await RenderAsync("{% asset_css \"/css/app.css\" %}", ctx =>
+            ctx.SetValue("_asset_manifest", manifest));
+
+        result.Should().Contain("<link rel=\"stylesheet\" href=\"/css/app.css?v=");
+        result.Should().Contain("\" />");
+    }
+
+    // ── asset_js ──
+
+    [Fact]
+    public async Task AssetJs_RendersScriptTag()
+    {
+        var result = await RenderAsync("{% asset_js \"/js/app.js\" %}");
+
+        result.Should().Contain("<script src=\"/js/app.js\"></script>");
+    }
+
+    [Fact]
+    public async Task AssetJs_WithManifest_RendersVersionedPath()
+    {
+        var content = "console.log('hello');"u8.ToArray();
+        var fileInfo = Substitute.For<IFileInfo>();
+        fileInfo.Exists.Returns(true);
+        fileInfo.PhysicalPath.Returns("/wwwroot/js/app.js");
+        fileInfo.CreateReadStream().Returns(_ => new MemoryStream(content));
+
+        var fileProvider = Substitute.For<IFileProvider>();
+        fileProvider.GetFileInfo("js/app.js").Returns(fileInfo);
+
+        var env = Substitute.For<IWebHostEnvironment>();
+        env.EnvironmentName.Returns(Environments.Production);
+        env.WebRootFileProvider.Returns(fileProvider);
+
+        var manifest = new AssetManifest(env);
+
+        var result = await RenderAsync("{% asset_js \"/js/app.js\" %}", ctx =>
+            ctx.SetValue("_asset_manifest", manifest));
+
+        result.Should().Contain("<script src=\"/js/app.js?v=");
+        result.Should().Contain("\"></script>");
     }
 }

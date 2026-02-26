@@ -3,8 +3,11 @@ using InovaNotas.FluidHtmx.Configuration;
 using InovaNotas.FluidHtmx.Exceptions;
 using InovaNotas.FluidHtmx.Layouts;
 using InovaNotas.FluidHtmx.Rendering;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.FileProviders;
+using NSubstitute;
 using Xunit;
 
 namespace InovaNotas.FluidHtmx.Tests.Configuration;
@@ -65,6 +68,9 @@ public class FluidHtmxBuilderTests
     {
         var services = new ServiceCollection();
         services.AddLogging();
+        var env = Substitute.For<IWebHostEnvironment>();
+        env.WebRootFileProvider.Returns(Substitute.For<IFileProvider>());
+        services.AddSingleton(env);
         var builder = new FluidHtmxBuilder(services);
         builder.DefaultLayout<BuilderTestLayout>();
         builder.Validate();

@@ -4,7 +4,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>{{ page_title | default: "Home" }} - {{ app_name | default: "FluidHtmx DaisyUI" }}</title>
-    <link rel="stylesheet" href="/css/app.css" />
+    {% asset_css "/css/app.css" %}
 </head>
 <body class="min-h-screen flex flex-col bg-base-200">
 

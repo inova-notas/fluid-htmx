@@ -1,0 +1,21 @@
+{% case type %}
+  {% when 'primary' %}{% assign type_class = 'badge-primary' %}
+  {% when 'secondary' %}{% assign type_class = 'badge-secondary' %}
+  {% when 'accent' %}{% assign type_class = 'badge-accent' %}
+  {% when 'ghost' %}{% assign type_class = 'badge-ghost' %}
+  {% when 'info' %}{% assign type_class = 'badge-info' %}
+  {% when 'success' %}{% assign type_class = 'badge-success' %}
+  {% when 'warning' %}{% assign type_class = 'badge-warning' %}
+  {% when 'error' %}{% assign type_class = 'badge-error' %}
+  {% else %}{% assign type_class = '' %}
+{% endcase %}
+{% case size %}
+  {% when 'xs' %}{% assign size_class = 'badge-xs' %}
+  {% when 'sm' %}{% assign size_class = 'badge-sm' %}
+  {% when 'md' %}{% assign size_class = 'badge-md' %}
+  {% when 'lg' %}{% assign size_class = 'badge-lg' %}
+  {% else %}{% assign size_class = '' %}
+{% endcase %}
+<span class="badge {{ type_class }}{% if outline %} badge-outline{% endif %} {{ size_class }}">
+  {{ text }}
+</span>

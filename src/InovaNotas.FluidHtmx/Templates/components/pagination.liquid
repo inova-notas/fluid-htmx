@@ -1,0 +1,30 @@
+{% assign swap_val = swap | default: 'innerHTML' %}
+<div class="join">
+  {% if current_page > 1 %}
+    <a class="join-item btn"
+       href="{{ base_url }}?page={{ current_page | minus: 1 }}"
+       {% if target %}hx-get="{{ base_url }}?page={{ current_page | minus: 1 }}" hx-target="{{ target }}" hx-swap="{{ swap_val }}"{% endif %}>
+      &laquo;
+    </a>
+  {% endif %}
+
+  {% for p in (1..total_pages) %}
+    {% if p == current_page %}
+      <button class="join-item btn btn-active">{{ p }}</button>
+    {% else %}
+      <a class="join-item btn"
+         href="{{ base_url }}?page={{ p }}"
+         {% if target %}hx-get="{{ base_url }}?page={{ p }}" hx-target="{{ target }}" hx-swap="{{ swap_val }}"{% endif %}>
+        {{ p }}
+      </a>
+    {% endif %}
+  {% endfor %}
+
+  {% if current_page < total_pages %}
+    <a class="join-item btn"
+       href="{{ base_url }}?page={{ current_page | plus: 1 }}"
+       {% if target %}hx-get="{{ base_url }}?page={{ current_page | plus: 1 }}" hx-target="{{ target }}" hx-swap="{{ swap_val }}"{% endif %}>
+      &raquo;
+    </a>
+  {% endif %}
+</div>

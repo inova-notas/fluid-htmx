@@ -1,0 +1,23 @@
+{% assign method = confirm_method | default: 'delete' %}
+{% assign ok_label = confirm_label | default: 'Confirm' %}
+{% assign no_label = cancel_label | default: 'Cancel' %}
+<dialog id="{{ id }}" class="modal">
+  <div class="modal-box">
+    <h3 class="text-lg font-bold">{{ title }}</h3>
+    <p class="py-4">{{ message }}</p>
+    <div class="modal-action">
+      <form method="dialog">
+        <button class="btn">{{ no_label }}</button>
+      </form>
+      <button class="btn btn-error"
+              hx-{{ method }}="{{ confirm_url }}"
+              {% if confirm_target %}hx-target="{{ confirm_target }}"{% endif %}
+              onclick="this.closest('dialog').close()">
+        {{ ok_label }}
+      </button>
+    </div>
+  </div>
+  <form method="dialog" class="modal-backdrop">
+    <button>close</button>
+  </form>
+</dialog>

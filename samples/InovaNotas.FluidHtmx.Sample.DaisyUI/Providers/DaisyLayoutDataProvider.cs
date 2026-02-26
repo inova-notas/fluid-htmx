@@ -20,6 +20,12 @@ public class DaisyLayoutDataProvider : ILayoutDataProvider<DaisyLayout>
             },
             new Dictionary<string, object>
             {
+                ["label"] = "Components",
+                ["url"] = "/components",
+                ["active"] = path == "/components"
+            },
+            new Dictionary<string, object>
+            {
                 ["label"] = "About",
                 ["url"] = "/about",
                 ["active"] = path == "/about"
@@ -28,6 +34,7 @@ public class DaisyLayoutDataProvider : ILayoutDataProvider<DaisyLayout>
 
         var pageTitle = path switch
         {
+            "/components" => "Components",
             "/about" => "About",
             _ => "Home"
         };

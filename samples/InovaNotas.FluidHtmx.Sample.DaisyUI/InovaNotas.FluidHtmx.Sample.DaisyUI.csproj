@@ -11,6 +11,10 @@
         <ProjectReference Include="..\..\src\InovaNotas.FluidHtmx\InovaNotas.FluidHtmx.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="Templates\components\" />
+    </ItemGroup>
+
     <Target Name="DownloadDaisyUI" BeforeTargets="TailwindBuild"
             Condition="!Exists('Styles/daisyui.mjs')">
         <Exec Command="curl -sLo Styles/daisyui.mjs https://github.com/saadeghi/daisyui/releases/latest/download/daisyui.mjs" />

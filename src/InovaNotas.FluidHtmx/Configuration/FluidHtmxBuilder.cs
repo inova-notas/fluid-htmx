@@ -6,6 +6,8 @@ using InovaNotas.FluidHtmx.Layouts;
 using InovaNotas.FluidHtmx.Rendering;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.FileProviders;
+using Microsoft.Extensions.Logging;
 
 namespace InovaNotas.FluidHtmx.Configuration;
 
@@ -120,6 +122,57 @@ public class FluidHtmxBuilder
         _services.AddSingleton<TemplateCache>();
         _services.AddSingleton<TemplateLocator>();
         _services.AddScoped<IViewRenderer, FluidViewRenderer>();
+    }
+
+    public FluidHtmxBuilder EjectComponent(string name, ILogger? logger = null)
+    {
+        var embeddedProvider = CreateEmbeddedProvider();
+        var relativePath = $"components/{name}.liquid";
+        var fileInfo = embeddedProvider.GetFileInfo(relativePath);
+
+        if (!fileInfo.Exists)
+            throw new FluidHtmxConfigException($"Embedded component '{name}' not found.");
+
+        var destDir = Path.Combine(Directory.GetCurrentDirectory(), _options.TemplatesPath, "components");
+        var destPath = Path.Combine(destDir, $"{name}.liquid");
+
+        if (File.Exists(destPath))
+        {
+            logger?.LogWarning("Component '{Name}' already exists at {Path}. Skipping.", name, destPath);
+            return this;
+        }
+
+        Directory.CreateDirectory(destDir);
+
+        using var stream = fileInfo.CreateReadStream();
+        using var fileStream = File.Create(destPath);
+        stream.CopyTo(fileStream);
+
+        logger?.LogInformation("Ejected component '{Name}' to {Path}.", name, destPath);
+        return this;
+    }
+
+    public FluidHtmxBuilder EjectAllComponents(ILogger? logger = null)
+    {
+        var embeddedProvider = CreateEmbeddedProvider();
+        var contents = embeddedProvider.GetDirectoryContents("components");
+
+        foreach (var file in contents)
+        {
+            if (file.IsDirectory || !file.Name.EndsWith(".liquid"))
+                continue;
+
+            var componentName = Path.GetFileNameWithoutExtension(file.Name);
+            EjectComponent(componentName, logger);
+        }
+
+        return this;
+    }
+
+    private static ManifestEmbeddedFileProvider CreateEmbeddedProvider()
+    {
+        var assembly = typeof(FluidHtmxBuilder).Assembly;
+        return new ManifestEmbeddedFileProvider(assembly, "Templates");
     }
 
     private void CompileDefaultLayoutDelegate(Type layoutType)

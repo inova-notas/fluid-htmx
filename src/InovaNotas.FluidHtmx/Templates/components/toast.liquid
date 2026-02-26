@@ -1,0 +1,16 @@
+{% assign dismiss = dismissible | default: true %}
+{% assign dur = duration | default: 3000 %}
+{% case type %}
+  {% when 'success' %}{% assign type_class = 'alert-success' %}
+  {% when 'warning' %}{% assign type_class = 'alert-warning' %}
+  {% when 'error' %}{% assign type_class = 'alert-error' %}
+  {% else %}{% assign type_class = 'alert-info' %}
+{% endcase %}
+<div class="toast toast-end" {% if dismiss %}hx-on::load="setTimeout(() => this.remove(), {{ dur }})"{% endif %}">
+  <div class="alert {{ type_class }}">
+    <span>{{ message }}</span>
+    {% if dismiss %}
+    <button class="btn btn-ghost btn-xs" onclick="this.closest('.toast').remove()">✕</button>
+    {% endif %}
+  </div>
+</div>

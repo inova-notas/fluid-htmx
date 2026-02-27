@@ -9,7 +9,8 @@ builder.Services.AddFluidHtmx(fluid =>
 {
     fluid.TemplatesPath("Templates");
     fluid.EnableHotReload(builder.Environment.IsDevelopment());
-    fluid.Assets(assets => assets.EnableTailwind("v4.2.0"));
+    fluid.Assets(assets => assets.EnableTailwind("v4.2.0")
+        .EnableDaisyUI("5.5.19", themes: "dark"));
     fluid.DefaultLayout<LandingLayout>();
     fluid.AddLayout<LandingLayout, LandingLayoutDataProvider>();
     fluid.EjectAllComponents();

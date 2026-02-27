@@ -377,13 +377,89 @@ fluid.Assets(assets => assets.EnableTailwind("v4.2.0"));
 
 In development, a background service runs `tailwindcss watch` to rebuild CSS on changes. In production, assets get SHA256 cache-busted URLs automatically.
 
+### Production builds (CI/CD)
+
+The Tailwind CSS CLI is only needed at build time — not on the production server. Add the following MSBuild target to your `.csproj` so that CSS is compiled during `dotnet build` / `dotnet publish` in your CI pipeline:
+
+```xml
+<Target Name="TailwindBuild" BeforeTargets="BeforeBuild"
+        Condition="'$(DOTNET_ENVIRONMENT)' != 'Development' AND '$(ASPNETCORE_ENVIRONMENT)' != 'Development'">
+    <Exec Command="dotnet tool restore" />
+    <Exec Command="dotnet tool run tailwindcss build -m -i Styles/app.css -o wwwroot/css/app.css" />
+</Target>
+```
+
+The `Condition` skips the target during local development, where `TailwindWatchService` handles CSS compilation via watch mode. In CI (where neither environment variable is set to `Development`), it produces a minified CSS build.
+
+### Tool Installation
+
+FluidHtmx uses [AustinS.TailwindCssTool](https://www.nuget.org/packages/AustinS.TailwindCssTool) — no Node.js required. Install it before using Tailwind:
+
+**Local tool (recommended):**
+```bash
+dotnet new tool-manifest
+dotnet tool install AustinS.TailwindCssTool
+```
+
+This creates a `.config/dotnet-tools.json` that gets committed to your repo:
+```json
+{
+  "version": 1,
+  "isRoot": true,
+  "tools": {
+    "austins.tailwindcsstool": {
+      "version": "1.2.0",
+      "commands": ["tailwindcss"],
+      "rollForward": false
+    }
+  }
+}
+```
+
+**Global tool:**
+```bash
+dotnet tool install -g AustinS.TailwindCssTool
+```
+
+When cloning a project with a local manifest, run `dotnet tool restore` to install the tool.
+
 ### DaisyUI
 
-Add DaisyUI by downloading its bundles and configuring your `Styles/app.css`:
+#### Automated setup
+
+Use the `EnableDaisyUI()` fluent API — FluidHtmx automatically downloads DaisyUI and scaffolds your CSS at startup:
+
+```csharp
+// Default DaisyUI version with dark theme
+fluid.Assets(assets => assets.EnableTailwind("v4.2.0").EnableDaisyUI(themes: "dark"));
+
+// Pinned version with multiple themes
+fluid.Assets(assets => assets.EnableTailwind("v4.2.0").EnableDaisyUI("v5.5.19", "dark", "light"));
+
+// Default version with default themes
+fluid.Assets(assets => assets.EnableTailwind("v4.2.0").EnableDaisyUI());
+```
+
+On startup, this:
+1. Downloads `daisyui.mjs` and `daisyui-theme.mjs` from GitHub releases to your `Styles/` directory (skips if files already exist)
+2. Scaffolds `Styles/app.css` with `@plugin` directives (never overwrites an existing file)
+
+The default DaisyUI version is `v5.5.19`. Pass a `version` parameter to override (e.g., `"v5.6.0"` → `releases/download/v5.6.0/daisyui.mjs`). The `v` prefix is optional — `"5.6.0"` is normalized automatically.
+
+#### Manual setup
+
+If you prefer to manage DaisyUI yourself without `EnableDaisyUI()`, download the files and configure your CSS manually:
+
+```bash
+curl -sL https://github.com/saadeghi/daisyui/releases/download/v5.5.19/daisyui.mjs -o Styles/daisyui.mjs
+curl -sL https://github.com/saadeghi/daisyui/releases/download/v5.5.19/daisyui-theme.mjs -o Styles/daisyui-theme.mjs
+```
 
 ```css
+/* Styles/app.css */
 @import "tailwindcss";
 
+@source not "./daisyui{,*}.mjs";
 @source "../Templates/**/*.liquid";
 
 @plugin "./daisyui.mjs" {
@@ -391,8 +467,6 @@ Add DaisyUI by downloading its bundles and configuring your `Styles/app.css`:
 }
 @plugin "./daisyui-theme.mjs";
 ```
-
-See the DaisyUI sample for a complete setup with MSBuild targets that download DaisyUI automatically.
 
 ## Template Resolution
 
@@ -468,6 +542,7 @@ dotnet run
 
 - .NET 10.0+
 - [Fluid.Core](https://www.nuget.org/packages/Fluid.Core) 2.31.0
+- [AustinS.TailwindCssTool](https://www.nuget.org/packages/AustinS.TailwindCssTool) 1.2.0+ (if using Tailwind/DaisyUI)
 
 ## License
 

@@ -4,7 +4,6 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
         <RootNamespace>InovaNotas.FluidHtmx.Sample.DaisyUI</RootNamespace>
-        <TailwindVersion>v4.2.0</TailwindVersion>
     </PropertyGroup>
 
     <ItemGroup>
@@ -15,14 +14,84 @@
       <Folder Include="Templates\components\" />
     </ItemGroup>
 
-    <Target Name="DownloadDaisyUI" BeforeTargets="TailwindBuild"
-            Condition="!Exists('Styles/daisyui.mjs')">
-        <Exec Command="curl -sLo Styles/daisyui.mjs https://github.com/saadeghi/daisyui/releases/latest/download/daisyui.mjs" />
-        <Exec Command="curl -sLo Styles/daisyui-theme.mjs https://github.com/saadeghi/daisyui/releases/latest/download/daisyui-theme.mjs" />
-    </Target>
+    <ItemGroup>
+      <None Update="Templates\components\confirm-dialog.liquid">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+      <None Update="Templates\components\modal.liquid">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+      <None Update="Templates\components\toast.liquid">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+      <None Update="Templates\layouts\landing.liquid">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+      <None Update="Templates\pages\docs\index.liquid">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+      <None Update="Templates\pages\landing\index.liquid">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+      <None Update="Templates\partials\docs\assets.liquid">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+      <None Update="Templates\partials\docs\components.liquid">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+      <None Update="Templates\partials\docs\filters.liquid">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+      <None Update="Templates\partials\docs\htmx-tags.liquid">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+      <None Update="Templates\partials\docs\layouts.liquid">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+      <None Update="Templates\partials\docs\rendering.liquid">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+      <None Update="Templates\partials\docs\response-helpers.liquid">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+      <None Update="Templates\partials\docs\setup.liquid">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+      <None Update="Templates\partials\docs\template-resolution.liquid">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+      <None Update="Templates\partials\landing\assets.liquid">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+      <None Update="Templates\partials\landing\components.liquid">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+      <None Update="Templates\partials\landing\cta.liquid">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+      <None Update="Templates\partials\landing\features.liquid">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+      <None Update="Templates\partials\landing\hero.liquid">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+      <None Update="Templates\partials\landing\htmx-tags.liquid">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+      <None Update="Templates\partials\landing\install.liquid">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+      <None Update="Templates\partials\landing\quick-start.liquid">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+    </ItemGroup>
 
-    <Target Name="TailwindBuild" BeforeTargets="BeforeBuild">
+    <!-- Production CSS build — runs during dotnet build/publish in CI pipelines.
+         DaisyUI files are downloaded at startup by DaisyUISetupService (skips if already present).
+         In development, TailwindWatchService handles CSS compilation via watch mode. -->
+    <Target Name="TailwindBuild" BeforeTargets="BeforeBuild"
+            Condition="'$(DOTNET_ENVIRONMENT)' != 'Development' AND '$(ASPNETCORE_ENVIRONMENT)' != 'Development'">
         <Exec Command="dotnet tool restore" />
-        <Exec Command="dotnet tool run tailwindcss build -t $(TailwindVersion) -m -i Styles/app.css -o wwwroot/css/app.css" />
+        <Exec Command="dotnet tool run tailwindcss build -m -i Styles/app.css -o wwwroot/css/app.css" />
     </Target>
 </Project>

@@ -108,10 +108,17 @@ public class FluidHtmxBuilder
             opts.InputCss = _options.Assets.InputCss;
             opts.OutputCss = _options.Assets.OutputCss;
             opts.DaisyUIEnabled = _options.Assets.DaisyUIEnabled;
+            opts.DaisyUIVersion = _options.Assets.DaisyUIVersion;
             opts.DaisyUIThemes = _options.Assets.DaisyUIThemes;
         });
 
         _services.AddSingleton<AssetManifest>();
+
+        if (_options.Assets.DaisyUIEnabled)
+        {
+            _services.AddHttpClient("DaisyUI");
+            _services.AddHostedService<DaisyUISetupService>();
+        }
 
         if (_options.Assets.TailwindEnabled)
             _services.AddHostedService<TailwindWatchService>();

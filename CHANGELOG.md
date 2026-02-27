@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [versionize](https://github.com/versionize/versionize) for commit guidelines.
 
+<a name="1.2.0"></a>
+## [1.2.0](https://www.github.com/inova-notas/fluid-htmx/releases/tag/v1.2.0) (2026-02-27)
+
+### Features
+
+* auto-register model types for Fluid template member access ([7b31109](https://www.github.com/inova-notas/fluid-htmx/commit/7b3110900de0250e43be023ff60ecda8235fa395))
+
 <a name="1.1.0"></a>
 ## [1.1.0](https://www.github.com/inova-notas/fluid-htmx/releases/tag/v1.1.0) (2026-02-27)
 

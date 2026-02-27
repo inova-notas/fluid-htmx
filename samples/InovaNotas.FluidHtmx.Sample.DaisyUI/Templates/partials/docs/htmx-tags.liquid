@@ -1,0 +1,183 @@
+{% raw %}
+<section id="htmx-tags" class="py-16 bg-base-200">
+    <div class="max-w-4xl mx-auto px-6">
+        <h2 class="text-3xl font-bold mb-8">HTMX Tags</h2>
+        <p class="text-base-content/70 mb-8">Custom Liquid tags that generate HTMX-enabled HTML. Available in all templates automatically.</p>
+
+        <!-- hx_link -->
+        <div class="card bg-base-100 shadow-sm mb-6">
+            <div class="card-body">
+                <h3 class="card-title font-mono text-primary">hx_link</h3>
+                <p class="text-base-content/70 text-sm mb-3">Renders an <code>&lt;a&gt;</code> with HTMX attributes for partial page navigation.</p>
+                <div class="code-block mb-3">
+<pre><code><span class="fn">{%</span> <span class="kw">hx_link</span> <span class="str">"/about"</span>,
+    target: <span class="str">"#main-content"</span>,
+    swap: <span class="str">"innerHTML"</span>,
+    push_url: <span class="str">"true"</span>,
+    class: <span class="str">"nav-link"</span> <span class="fn">%}</span>
+  About
+<span class="fn">{%</span> <span class="kw">endhx_link</span> <span class="fn">%}</span>
+
+<span class="cmt">&lt;!-- With hx-boost instead --&gt;</span>
+<span class="fn">{%</span> <span class="kw">hx_link</span> <span class="str">"/home"</span>, boost: <span class="str">true</span> <span class="fn">%}</span>Home<span class="fn">{%</span> <span class="kw">endhx_link</span> <span class="fn">%}</span></code></pre>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="table table-sm">
+                        <thead><tr><th>Parameter</th><th>Default</th><th>Description</th></tr></thead>
+                        <tbody>
+                            <tr><td class="font-mono text-sm">url</td><td>required</td><td>The href and hx-get URL</td></tr>
+                            <tr><td class="font-mono text-sm">target</td><td><code>"#main-content"</code></td><td>CSS selector for swap target</td></tr>
+                            <tr><td class="font-mono text-sm">swap</td><td><code>"innerHTML"</code></td><td>HTMX swap strategy</td></tr>
+                            <tr><td class="font-mono text-sm">push_url</td><td><code>"true"</code></td><td>Push URL to browser history</td></tr>
+                            <tr><td class="font-mono text-sm">boost</td><td>absent</td><td>Use <code>hx-boost="true"</code> instead of full HTMX attrs</td></tr>
+                            <tr><td class="font-mono text-sm">class</td><td>absent</td><td>HTML class attribute</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- hx_button -->
+        <div class="card bg-base-100 shadow-sm mb-6">
+            <div class="card-body">
+                <h3 class="card-title font-mono text-primary">hx_button</h3>
+                <p class="text-base-content/70 text-sm mb-3">Renders a <code>&lt;button&gt;</code> with HTMX attributes.</p>
+                <div class="code-block mb-3">
+<pre><code><span class="fn">{%</span> <span class="kw">hx_button</span> <span class="str">"/users/1"</span>,
+    method: <span class="str">"delete"</span>,
+    confirm: <span class="str">"Are you sure?"</span>,
+    target: <span class="str">"#user-row-1"</span>,
+    swap: <span class="str">"outerHTML"</span>,
+    class: <span class="str">"btn btn-error"</span> <span class="fn">%}</span>
+  Delete
+<span class="fn">{%</span> <span class="kw">endhx_button</span> <span class="fn">%}</span></code></pre>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="table table-sm">
+                        <thead><tr><th>Parameter</th><th>Default</th><th>Description</th></tr></thead>
+                        <tbody>
+                            <tr><td class="font-mono text-sm">url</td><td>required</td><td>The hx-{method} URL</td></tr>
+                            <tr><td class="font-mono text-sm">method</td><td><code>"post"</code></td><td>HTTP verb: get, post, put, delete, patch</td></tr>
+                            <tr><td class="font-mono text-sm">target</td><td>absent</td><td>CSS selector for swap target</td></tr>
+                            <tr><td class="font-mono text-sm">swap</td><td>absent</td><td>HTMX swap strategy</td></tr>
+                            <tr><td class="font-mono text-sm">confirm</td><td>absent</td><td>Confirmation dialog text</td></tr>
+                            <tr><td class="font-mono text-sm">class</td><td>absent</td><td>HTML class attribute</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- hx_form -->
+        <div class="card bg-base-100 shadow-sm mb-6">
+            <div class="card-body">
+                <h3 class="card-title font-mono text-primary">hx_form</h3>
+                <p class="text-base-content/70 text-sm mb-3">Renders a <code>&lt;form&gt;</code> with HTMX attributes.</p>
+                <div class="code-block mb-3">
+<pre><code><span class="fn">{%</span> <span class="kw">hx_form</span> <span class="str">"/users"</span>,
+    method: <span class="str">"post"</span>,
+    target: <span class="str">"#user-list"</span>,
+    swap: <span class="str">"beforeend"</span> <span class="fn">%}</span>
+  &lt;input name=<span class="str">"name"</span> /&gt;
+  <span class="fn">{%</span> <span class="kw">csrf_token</span> <span class="fn">%}</span>
+  &lt;button type=<span class="str">"submit"</span>&gt;Add&lt;/button&gt;
+<span class="fn">{%</span> <span class="kw">endhx_form</span> <span class="fn">%}</span></code></pre>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="table table-sm">
+                        <thead><tr><th>Parameter</th><th>Default</th><th>Description</th></tr></thead>
+                        <tbody>
+                            <tr><td class="font-mono text-sm">url</td><td>required</td><td>Form action URL</td></tr>
+                            <tr><td class="font-mono text-sm">method</td><td><code>"post"</code></td><td>HTTP verb</td></tr>
+                            <tr><td class="font-mono text-sm">target</td><td>absent</td><td>CSS selector for swap target</td></tr>
+                            <tr><td class="font-mono text-sm">swap</td><td>absent</td><td>HTMX swap strategy</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- hx_lazy -->
+        <div class="card bg-base-100 shadow-sm mb-6">
+            <div class="card-body">
+                <h3 class="card-title font-mono text-primary">hx_lazy</h3>
+                <p class="text-base-content/70 text-sm mb-3">Renders a <code>&lt;div&gt;</code> that lazy-loads content when it enters the viewport.</p>
+                <div class="code-block mb-3">
+<pre><code><span class="fn">{%</span> <span class="kw">hx_lazy</span> <span class="str">"/partials/stats"</span>,
+    trigger: <span class="str">"load"</span>,
+    swap: <span class="str">"outerHTML"</span> <span class="fn">%}</span>
+  &lt;span class=<span class="str">"loading"</span>&gt;...&lt;/span&gt;
+<span class="fn">{%</span> <span class="kw">endhx_lazy</span> <span class="fn">%}</span></code></pre>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="table table-sm">
+                        <thead><tr><th>Parameter</th><th>Default</th><th>Description</th></tr></thead>
+                        <tbody>
+                            <tr><td class="font-mono text-sm">url</td><td>required</td><td>URL to fetch content from</td></tr>
+                            <tr><td class="font-mono text-sm">trigger</td><td><code>"load"</code></td><td>HTMX trigger event</td></tr>
+                            <tr><td class="font-mono text-sm">swap</td><td><code>"outerHTML"</code></td><td>HTMX swap strategy</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- hx_swap_oob -->
+        <div class="card bg-base-100 shadow-sm mb-6">
+            <div class="card-body">
+                <h3 class="card-title font-mono text-primary">hx_swap_oob</h3>
+                <p class="text-base-content/70 text-sm mb-3">Out-of-band swap for updating multiple targets in a single response.</p>
+                <div class="code-block mb-3">
+<pre><code><span class="fn">{%</span> <span class="kw">hx_swap_oob</span> <span class="str">"#toast"</span> <span class="fn">%}</span>
+  &lt;div class=<span class="str">"alert alert-success"</span>&gt;Saved!&lt;/div&gt;
+<span class="fn">{%</span> <span class="kw">endhx_swap_oob</span> <span class="fn">%}</span>
+
+<span class="cmt">&lt;!-- Output: &lt;div id="toast" hx-swap-oob="true"&gt;...&lt;/div&gt; --&gt;</span></code></pre>
+                </div>
+            </div>
+        </div>
+
+        <!-- Utility tags -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="card bg-base-100 shadow-sm">
+                <div class="card-body">
+                    <h3 class="card-title font-mono text-primary text-base">hx_script</h3>
+                    <p class="text-base-content/70 text-sm mb-3">Injects the HTMX <code>&lt;script&gt;</code> tag. Place in your layout before <code>&lt;/body&gt;</code>.</p>
+                    <div class="code-block">
+<pre><code><span class="fn">{%</span> <span class="kw">hx_script</span> <span class="fn">%}</span></code></pre>
+                    </div>
+                </div>
+            </div>
+            <div class="card bg-base-100 shadow-sm">
+                <div class="card-body">
+                    <h3 class="card-title font-mono text-primary text-base">csrf_token</h3>
+                    <p class="text-base-content/70 text-sm mb-3">Renders an anti-forgery hidden input for forms.</p>
+                    <div class="code-block">
+<pre><code><span class="fn">{%</span> <span class="kw">csrf_token</span> <span class="fn">%}</span>
+<span class="cmt">&lt;!-- &lt;input type="hidden" name="__RequestVerificationToken" value="..." /&gt; --&gt;</span></code></pre>
+                    </div>
+                </div>
+            </div>
+            <div class="card bg-base-100 shadow-sm">
+                <div class="card-body">
+                    <h3 class="card-title font-mono text-primary text-base">hx_indicator</h3>
+                    <p class="text-base-content/70 text-sm mb-3">Loading spinner with <code>htmx-indicator</code> class.</p>
+                    <div class="code-block">
+<pre><code><span class="fn">{%</span> <span class="kw">hx_indicator</span> <span class="fn">%}</span></code></pre>
+                    </div>
+                </div>
+            </div>
+            <div class="card bg-base-100 shadow-sm">
+                <div class="card-body">
+                    <h3 class="card-title font-mono text-primary text-base">asset_css / asset_js</h3>
+                    <p class="text-base-content/70 text-sm mb-3">CSS/JS links with SHA256 cache busting in production.</p>
+                    <div class="code-block">
+<pre><code><span class="fn">{%</span> <span class="kw">asset_css</span> <span class="str">"/css/app.css"</span> <span class="fn">%}</span>
+<span class="fn">{%</span> <span class="kw">asset_js</span> <span class="str">"/js/app.js"</span> <span class="fn">%}</span></code></pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endraw %}

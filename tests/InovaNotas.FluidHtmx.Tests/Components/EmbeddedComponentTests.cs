@@ -2,7 +2,6 @@ using Fluid;
 using FluentAssertions;
 using InovaNotas.FluidHtmx.Configuration;
 using InovaNotas.FluidHtmx.Rendering;
-using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Options;
 using Xunit;
 
@@ -34,16 +33,9 @@ public class EmbeddedComponentTests
     }
 
     [Theory]
-    [InlineData("alert")]
-    [InlineData("badge")]
-    [InlineData("breadcrumb")]
-    [InlineData("pagination")]
-    [InlineData("table")]
-    [InlineData("empty-state")]
     [InlineData("toast")]
     [InlineData("confirm-dialog")]
     [InlineData("modal")]
-    [InlineData("dropdown")]
     public async Task AllComponents_CanBeRendered(string componentName)
     {
         var source = await ReadEmbeddedComponentAsync(componentName);
@@ -58,114 +50,6 @@ public class EmbeddedComponentTests
     }
 
     [Fact]
-    public async Task Alert_RendersWithTypeAndMessage()
-    {
-        var html = await RenderComponentAsync("alert", new Dictionary<string, object>
-        {
-            ["type"] = "success",
-            ["message"] = "Operation completed"
-        });
-
-        html.Should().Contain("alert-success");
-        html.Should().Contain("Operation completed");
-    }
-
-    [Fact]
-    public async Task Badge_RendersWithTypeAndText()
-    {
-        var html = await RenderComponentAsync("badge", new Dictionary<string, object>
-        {
-            ["text"] = "New",
-            ["type"] = "primary"
-        });
-
-        html.Should().Contain("badge-primary");
-        html.Should().Contain("New");
-    }
-
-    [Fact]
-    public async Task Badge_RendersOutlineVariant()
-    {
-        var html = await RenderComponentAsync("badge", new Dictionary<string, object>
-        {
-            ["text"] = "Draft",
-            ["type"] = "warning",
-            ["outline"] = true
-        });
-
-        html.Should().Contain("badge-outline");
-        html.Should().Contain("badge-warning");
-    }
-
-    [Fact]
-    public async Task Pagination_RendersCorrectPageLinks()
-    {
-        var html = await RenderComponentAsync("pagination", new Dictionary<string, object>
-        {
-            ["current_page"] = 2,
-            ["total_pages"] = 5,
-            ["base_url"] = "/users",
-            ["target"] = "#user-list"
-        });
-
-        html.Should().Contain("hx-get=\"/users?page=1\"");
-        html.Should().Contain("hx-get=\"/users?page=3\"");
-        html.Should().Contain("hx-target=\"#user-list\"");
-        html.Should().Contain("btn-active");
-    }
-
-    [Fact]
-    public async Task Table_RendersHeadersAndRows()
-    {
-        var html = await RenderComponentAsync("table", new Dictionary<string, object>
-        {
-            ["headers"] = new List<string> { "Name", "Email" },
-            ["rows"] = new List<List<string>>
-            {
-                new() { "Alice", "alice@example.com" },
-                new() { "Bob", "bob@example.com" }
-            },
-            ["striped"] = true
-        });
-
-        html.Should().Contain("<th>Name</th>");
-        html.Should().Contain("<th>Email</th>");
-        html.Should().Contain("<td>Alice</td>");
-        html.Should().Contain("<td>bob@example.com</td>");
-        html.Should().Contain("table-striped");
-    }
-
-    [Fact]
-    public async Task EmptyState_RendersWithTitleAndMessage()
-    {
-        var html = await RenderComponentAsync("empty-state", new Dictionary<string, object>
-        {
-            ["title"] = "No results",
-            ["message"] = "Try a different search."
-        });
-
-        html.Should().Contain("No results");
-        html.Should().Contain("Try a different search.");
-    }
-
-    [Fact]
-    public async Task EmptyState_RendersActionButton()
-    {
-        var html = await RenderComponentAsync("empty-state", new Dictionary<string, object>
-        {
-            ["title"] = "No items",
-            ["message"] = "Get started",
-            ["action_label"] = "Create",
-            ["action_url"] = "/items/new",
-            ["target"] = "#content"
-        });
-
-        html.Should().Contain("Create");
-        html.Should().Contain("hx-get=\"/items/new\"");
-        html.Should().Contain("hx-target=\"#content\"");
-    }
-
-    [Fact]
     public async Task Toast_RendersWithMessage()
     {
         var html = await RenderComponentAsync("toast", new Dictionary<string, object>
@@ -177,6 +61,20 @@ public class EmbeddedComponentTests
         html.Should().Contain("alert-success");
         html.Should().Contain("Saved!");
         html.Should().Contain("toast-end");
+    }
+
+    [Fact]
+    public async Task Toast_RendersAutoDismiss()
+    {
+        var html = await RenderComponentAsync("toast", new Dictionary<string, object>
+        {
+            ["message"] = "Done",
+            ["type"] = "info",
+            ["duration"] = 5000
+        });
+
+        html.Should().Contain("hx-on::load");
+        html.Should().Contain("5000");
     }
 
     [Fact]
@@ -199,6 +97,25 @@ public class EmbeddedComponentTests
     }
 
     [Fact]
+    public async Task ConfirmDialog_RendersCustomLabels()
+    {
+        var html = await RenderComponentAsync("confirm-dialog", new Dictionary<string, object>
+        {
+            ["id"] = "archive",
+            ["title"] = "Archive?",
+            ["message"] = "Item will be archived.",
+            ["confirm_url"] = "/items/1/archive",
+            ["confirm_method"] = "post",
+            ["confirm_label"] = "Yes, archive",
+            ["cancel_label"] = "No, keep it"
+        });
+
+        html.Should().Contain("Yes, archive");
+        html.Should().Contain("No, keep it");
+        html.Should().Contain("hx-post=\"/items/1/archive\"");
+    }
+
+    [Fact]
     public async Task Modal_RendersHtmxAttributes()
     {
         var html = await RenderComponentAsync("modal", new Dictionary<string, object>
@@ -218,40 +135,16 @@ public class EmbeddedComponentTests
     }
 
     [Fact]
-    public async Task Dropdown_RendersWithItems()
+    public async Task Modal_RendersLargeSize()
     {
-        var html = await RenderComponentAsync("dropdown", new Dictionary<string, object>
+        var html = await RenderComponentAsync("modal", new Dictionary<string, object>
         {
-            ["label"] = "Actions",
-            ["items"] = new List<Dictionary<string, object>>
-            {
-                new() { ["label"] = "Edit", ["url"] = "/edit" },
-                new() { ["label"] = "Delete", ["url"] = "/delete" }
-            }
+            ["id"] = "lg-modal",
+            ["url"] = "/content",
+            ["trigger_label"] = "Open",
+            ["size"] = "lg"
         });
 
-        html.Should().Contain("Actions");
-        html.Should().Contain("href=\"/edit\"");
-        html.Should().Contain("href=\"/delete\"");
-        html.Should().Contain("dropdown");
-    }
-
-    [Fact]
-    public async Task Breadcrumb_RendersItems()
-    {
-        var html = await RenderComponentAsync("breadcrumb", new Dictionary<string, object>
-        {
-            ["items"] = new List<Dictionary<string, object>>
-            {
-                new() { ["label"] = "Home", ["url"] = "/" },
-                new() { ["label"] = "Users", ["url"] = "/users" },
-                new() { ["label"] = "Details" }
-            }
-        });
-
-        html.Should().Contain("breadcrumbs");
-        html.Should().Contain("href=\"/\"");
-        html.Should().Contain("Home");
-        html.Should().Contain("Details");
+        html.Should().Contain("max-w-5xl");
     }
 }

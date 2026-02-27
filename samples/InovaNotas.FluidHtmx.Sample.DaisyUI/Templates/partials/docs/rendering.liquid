@@ -1,0 +1,77 @@
+{% raw %}
+<section id="rendering" class="py-16">
+    <div class="max-w-4xl mx-auto px-6">
+        <h2 class="text-3xl font-bold mb-8">Rendering</h2>
+
+        <h3 class="text-xl font-semibold mb-4">IViewRenderer</h3>
+        <p class="text-base-content/70 mb-4">Inject <code class="text-primary">IViewRenderer</code> into your endpoint handlers to render templates:</p>
+        <div class="code-block mb-8">
+<pre><code><span class="kw">public interface</span> <span class="typ">IViewRenderer</span>
+{
+    <span class="cmt">// Full page render with default layout</span>
+    Task&lt;<span class="typ">IResult</span>&gt; <span class="fn">RenderAsync</span>(<span class="typ">HttpContext</span> httpContext, <span class="kw">string</span> templateName, <span class="kw">object</span>? model = <span class="kw">null</span>);
+
+    <span class="cmt">// Full page render with explicit layout</span>
+    Task&lt;<span class="typ">IResult</span>&gt; <span class="fn">RenderAsync</span>&lt;<span class="typ">TLayout</span>&gt;(<span class="typ">HttpContext</span> httpContext, <span class="kw">string</span> templateName, <span class="kw">object</span>? model = <span class="kw">null</span>);
+
+    <span class="cmt">// Standalone HTML fragment (no layout)</span>
+    Task&lt;<span class="typ">IResult</span>&gt; <span class="fn">RenderPartialAsync</span>(<span class="kw">string</span> templateName, <span class="kw">object</span>? model = <span class="kw">null</span>);
+}</code></pre>
+        </div>
+
+        <h3 class="text-xl font-semibold mb-4">Template Names</h3>
+        <p class="text-base-content/70 mb-4">Template names are paths relative to <code class="text-primary">TemplatesPath</code>, without the <code>.liquid</code> extension:</p>
+        <div class="code-block mb-8">
+<pre><code><span class="cmt">// "pages/home/index" → Templates/pages/home/index.liquid</span>
+app.<span class="fn">MapGet</span>(<span class="str">"/"</span>, (<span class="typ">IViewRenderer</span> view, <span class="typ">HttpContext</span> ctx) =>
+    view.<span class="fn">RenderAsync</span>(ctx, <span class="str">"pages/home/index"</span>));
+
+<span class="cmt">// "partials/user-card" → Templates/partials/user-card.liquid</span>
+app.<span class="fn">MapGet</span>(<span class="str">"/partials/user"</span>, (<span class="typ">IViewRenderer</span> view) =>
+    view.<span class="fn">RenderPartialAsync</span>(<span class="str">"partials/user-card"</span>, user));</code></pre>
+        </div>
+
+        <h3 class="text-xl font-semibold mb-4">HTMX Detection</h3>
+        <p class="text-base-content/70 mb-4"><code class="text-primary">RenderAsync</code> automatically detects HTMX requests and returns partial content (no layout wrapping):</p>
+        <div class="overflow-x-auto mb-8">
+            <table class="table table-zebra bg-base-100 rounded-xl">
+                <thead>
+                    <tr>
+                        <th>Request Type</th>
+                        <th>Behavior</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Normal browser request</td>
+                        <td>Renders page <strong>+ layout</strong> (full HTML document)</td>
+                    </tr>
+                    <tr>
+                        <td>HTMX request (<code>HX-Request</code> header)</td>
+                        <td>Renders <strong>page only</strong> (partial HTML fragment)</td>
+                    </tr>
+                    <tr>
+                        <td>Boosted request (<code>HX-Boosted</code> header)</td>
+                        <td>Renders page <strong>+ layout</strong> (treated as full request)</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h3 class="text-xl font-semibold mb-4">Model Passing</h3>
+        <p class="text-base-content/70 mb-4">Pass a model object or a dictionary of template variables:</p>
+        <div class="code-block mb-4">
+<pre><code><span class="cmt">// Dictionary — each key becomes a template variable</span>
+<span class="kw">var</span> data = <span class="kw">new</span> Dictionary&lt;<span class="kw">string</span>, <span class="kw">object</span>&gt;
+{
+    [<span class="str">"title"</span>] = <span class="str">"Hello"</span>,
+    [<span class="str">"items"</span>] = myList
+};
+<span class="kw">return</span> view.<span class="fn">RenderAsync</span>(ctx, <span class="str">"pages/list"</span>, data);
+
+<span class="cmt">// Object — accessible as {{ model.property }}</span>
+<span class="kw">return</span> view.<span class="fn">RenderAsync</span>(ctx, <span class="str">"pages/user"</span>, user);</code></pre>
+        </div>
+    </div>
+</section>
+{% endraw %}

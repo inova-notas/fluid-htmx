@@ -115,30 +115,69 @@ To pin a specific DaisyUI version instead of `latest`, edit the download URLs in
 ```
 InovaNotas.FluidHtmx.Sample.DaisyUI/
 ├── Layouts/
-│   └── DaisyLayout.cs              # Layout definition (maps to "daisy" template)
+│   ├── DaisyLayout.cs                # Default layout — navbar, footer, HTMX nav
+│   └── LandingLayout.cs              # Minimal layout — no navbar, full-screen content
 ├── Providers/
-│   └── DaisyLayoutDataProvider.cs   # Injects nav_items, page_title, render time, etc.
+│   ├── DaisyLayoutDataProvider.cs     # nav_items, page_title, render_time_ms
+│   └── LandingLayoutDataProvider.cs   # app_name, current_year
 ├── Styles/
-│   ├── app.css                      # Tailwind input CSS with DaisyUI plugins
-│   ├── daisyui.mjs                  # (downloaded at build, git-ignored)
-│   └── daisyui-theme.mjs            # (downloaded at build, git-ignored)
+│   ├── app.css                        # Tailwind input CSS with DaisyUI plugins
+│   ├── daisyui.mjs                    # (downloaded at build, git-ignored)
+│   └── daisyui-theme.mjs             # (downloaded at build, git-ignored)
 ├── Templates/
 │   ├── layouts/
-│   │   └── daisy.liquid             # HTML5 layout with navbar, footer, HTMX script
+│   │   ├── daisy.liquid               # HTML5 layout with navbar, footer, HTMX script
+│   │   └── landing.liquid             # Minimal full-screen layout
 │   ├── pages/
-│   │   ├── home/index.liquid        # Hero section + "Load Features" HTMX button
-│   │   └── about/index.liquid       # Stats, steps, and card components
-│   └── partials/
-│       └── feature-cards.liquid     # Cards loaded on-demand via HTMX
+│   │   ├── home/index.liquid          # Hero section + "Load Features" HTMX button
+│   │   ├── about/index.liquid         # Stats, steps, and card components
+│   │   ├── components/index.liquid    # Behavioral component showcase
+│   │   └── landing/index.liquid       # Landing page hero
+│   ├── partials/
+│   │   ├── feature-cards.liquid       # Cards loaded on-demand via HTMX
+│   │   ├── toast-demo.liquid          # Toast notification demo
+│   │   ├── toast-demo-2.liquid        # Second toast variant demo
+│   │   └── modal-demo.liquid          # Modal content loaded via HTMX
+│   └── components/                    # Ejected behavioral components
+│       ├── toast.liquid
+│       ├── confirm-dialog.liquid
+│       └── modal.liquid
 ├── wwwroot/
 │   └── css/
-│       └── app.css                  # (generated output, git-ignored)
-├── Program.cs                       # Routes, middleware, FluidHtmx config
-├── .gitignore                       # Ignores build artifacts
+│       └── app.css                    # (generated output, git-ignored)
+├── Program.cs                         # Routes, middleware, FluidHtmx config
+├── .gitignore                         # Ignores build artifacts
 └── InovaNotas.FluidHtmx.Sample.DaisyUI.csproj
 ```
 
 ## Key design points
+
+### Multiple layouts
+
+This sample demonstrates two layouts, each with its own data provider:
+
+- **`DaisyLayout`** — the default layout, used by all regular pages. Its `DaisyLayoutDataProvider` supplies navigation items, the current page title, and render time.
+- **`LandingLayout`** — a minimal layout with no navbar, used for the `/landing` route. Its `LandingLayoutDataProvider` supplies only the app name and year.
+
+Registration in `Program.cs`:
+
+```csharp
+fluid.DefaultLayout<DaisyLayout>();
+fluid.AddLayout<DaisyLayout, DaisyLayoutDataProvider>();
+fluid.AddLayout<LandingLayout, LandingLayoutDataProvider>();
+```
+
+Routes use the default layout implicitly, or specify a layout explicitly:
+
+```csharp
+// Uses the default DaisyLayout
+app.MapGet("/", (IViewRenderer view, HttpContext ctx) =>
+    view.RenderAsync(ctx, "pages/home/index"));
+
+// Uses LandingLayout explicitly
+app.MapGet("/landing", (IViewRenderer view, HttpContext ctx) =>
+    view.RenderAsync<LandingLayout>(ctx, "pages/landing/index"));
+```
 
 ### Custom theme
 
@@ -155,6 +194,10 @@ The `/partials/features` endpoint uses `RenderPartialAsync` to return just the H
 ### HTMX detection
 
 When a request includes the `HX-Request` header (sent automatically by HTMX), `FluidViewRenderer` returns only the page content without the layout. This means clicking a navbar link swaps just the `<main>` content, not the full page.
+
+### Ejected components
+
+The sample calls `fluid.EjectAllComponents()` to extract the built-in behavioral components (toast, confirm-dialog, modal) into `Templates/components/`. This makes them editable and ensures Tailwind CSS can scan them for class extraction.
 
 ### Render time
 

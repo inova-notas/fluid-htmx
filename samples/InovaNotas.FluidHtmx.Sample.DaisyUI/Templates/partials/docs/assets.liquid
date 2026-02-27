@@ -1,0 +1,86 @@
+{% raw %}
+<section id="assets" class="py-16 bg-base-200">
+    <div class="max-w-4xl mx-auto px-6">
+        <h2 class="text-3xl font-bold mb-8">Assets</h2>
+        <p class="text-base-content/70 mb-8">Built-in asset pipeline for Tailwind CSS &mdash; no Node.js required.</p>
+
+        <h3 class="text-xl font-semibold mb-4">Tailwind CSS</h3>
+        <p class="text-base-content/70 mb-4">Enable Tailwind CSS compilation using the standalone CLI, downloaded as a .NET tool:</p>
+        <div class="code-block mb-8">
+<pre><code>fluid.<span class="fn">Assets</span>(assets => assets.<span class="fn">EnableTailwind</span>(<span class="str">"v4.2.0"</span>));</code></pre>
+        </div>
+
+        <h3 class="text-xl font-semibold mb-4">Asset Options</h3>
+        <div class="overflow-x-auto mb-8">
+            <table class="table table-zebra bg-base-100 rounded-xl">
+                <thead>
+                    <tr>
+                        <th>Property</th>
+                        <th>Default</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="font-mono text-primary text-sm">TailwindEnabled</td>
+                        <td class="font-mono text-sm">false</td>
+                        <td>Enable Tailwind CSS compilation</td>
+                    </tr>
+                    <tr>
+                        <td class="font-mono text-primary text-sm">TailwindVersion</td>
+                        <td class="font-mono text-sm">"4.2"</td>
+                        <td>Tailwind standalone CLI version</td>
+                    </tr>
+                    <tr>
+                        <td class="font-mono text-primary text-sm">InputCss</td>
+                        <td class="font-mono text-sm">"Styles/app.css"</td>
+                        <td>Source CSS file path</td>
+                    </tr>
+                    <tr>
+                        <td class="font-mono text-primary text-sm">OutputCss</td>
+                        <td class="font-mono text-sm">"wwwroot/css/app.css"</td>
+                        <td>Compiled CSS output path</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h3 class="text-xl font-semibold mb-4">Watch Mode</h3>
+        <p class="text-base-content/70 mb-4">In development, a <code class="text-primary">TailwindWatchService</code> background service runs <code>tailwindcss watch</code> automatically. CSS is recompiled on every file change.</p>
+
+        <h3 class="text-xl font-semibold mb-4">Cache Busting</h3>
+        <p class="text-base-content/70 mb-4">In production, <code class="text-primary">asset_css</code> and <code class="text-primary">asset_js</code> tags append a SHA256 content hash as a query parameter:</p>
+        <div class="code-block mb-8">
+<pre><code><span class="cmt">&lt;!-- Template --&gt;</span>
+<span class="fn">{%</span> <span class="kw">asset_css</span> <span class="str">"/css/app.css"</span> <span class="fn">%}</span>
+
+<span class="cmt">&lt;!-- Development output --&gt;</span>
+&lt;link rel=<span class="str">"stylesheet"</span> href=<span class="str">"/css/app.css"</span> /&gt;
+
+<span class="cmt">&lt;!-- Production output --&gt;</span>
+&lt;link rel=<span class="str">"stylesheet"</span> href=<span class="str">"/css/app.css?v=a1b2c3d4"</span> /&gt;</code></pre>
+        </div>
+
+        <h3 class="text-xl font-semibold mb-4">DaisyUI</h3>
+        <p class="text-base-content/70 mb-4">DaisyUI works with standalone Tailwind bundles. Add the plugins to your <code>app.css</code>:</p>
+        <div class="code-block mb-8">
+<pre><code><span class="kw">@import</span> <span class="str">"tailwindcss"</span>;
+<span class="kw">@source</span> <span class="str">"../Templates/**/*.liquid"</span>;
+
+<span class="kw">@plugin</span> <span class="str">"./daisyui.mjs"</span> {
+    themes: dark --default;
+}
+<span class="kw">@plugin</span> <span class="str">"./daisyui-theme.mjs"</span>;</code></pre>
+        </div>
+
+        <h3 class="text-xl font-semibold mb-4">Hot Reload</h3>
+        <p class="text-base-content/70 mb-4">Enable template hot reload in development to invalidate cached templates on every file save:</p>
+        <div class="code-block">
+<pre><code>fluid.<span class="fn">EnableHotReload</span>(builder.Environment.<span class="fn">IsDevelopment</span>());
+
+<span class="cmt">// A FileSystemWatcher monitors Templates/**/*.liquid</span>
+<span class="cmt">// Changes are debounced (50ms) before cache invalidation</span></code></pre>
+        </div>
+    </div>
+</section>
+{% endraw %}

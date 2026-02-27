@@ -1,0 +1,64 @@
+<section id="assets" class="py-24 bg-base-200">
+    <div class="max-w-5xl mx-auto px-6">
+        <div class="text-center mb-16">
+            <h2 class="text-4xl font-bold">Asset Pipeline</h2>
+            <p class="mt-4 text-lg text-base-content/60">Tailwind CSS compilation without Node.js &mdash; optional DaisyUI included</p>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+
+            <div class="card bg-base-100 shadow-sm">
+                <div class="card-body">
+                    <h3 class="card-title">Tailwind CSS</h3>
+                    <p class="text-base-content/70 text-sm mb-4">Uses the standalone Tailwind CLI via a .NET tool. Watch mode in development, SHA256 cache busting in production.</p>
+                    <div class="code-block">
+<pre><code>fluid.<span class="fn">Assets</span>(assets =>
+    assets.<span class="fn">EnableTailwind</span>(<span class="str">"v4.2.0"</span>));</code></pre>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card bg-base-100 shadow-sm">
+                <div class="card-body">
+                    <h3 class="card-title">DaisyUI</h3>
+                    <p class="text-base-content/70 text-sm mb-4">Standalone bundles that plug directly into the Tailwind CLI. No npm install needed.</p>
+                    <div class="code-block">
+<pre><code><span class="kw">@import</span> <span class="str">"tailwindcss"</span>;
+<span class="kw">@source</span> <span class="str">"../Templates/**/*.liquid"</span>;
+
+<span class="kw">@plugin</span> <span class="str">"./daisyui.mjs"</span> {
+    themes: dark --default;
+}
+<span class="kw">@plugin</span> <span class="str">"./daisyui-theme.mjs"</span>;</code></pre>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- DX features -->
+        <div class="mt-16">
+            <h3 class="text-2xl font-bold mb-8 text-center">Developer Experience</h3>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="text-center">
+                    <div class="text-3xl mb-3">&#9889;</div>
+                    <h4 class="font-semibold mb-2">Hot Reload</h4>
+                    <p class="text-base-content/60 text-sm">File watcher invalidates template cache on every save. No restart needed.</p>
+                    <div class="code-block mt-3 text-left">
+<pre><code>fluid.<span class="fn">EnableHotReload</span>(<span class="str">true</span>);</code></pre>
+                    </div>
+                </div>
+                <div class="text-center">
+                    <div class="text-3xl mb-3">&#128270;</div>
+                    <h4 class="font-semibold mb-2">Error Pages</h4>
+                    <p class="text-base-content/60 text-sm">Parse errors show source code with the offending line highlighted. Not-found errors list search paths.</p>
+                </div>
+                <div class="text-center">
+                    <div class="text-3xl mb-3">&#128193;</div>
+                    <h4 class="font-semibold mb-2">Template Resolution</h4>
+                    <p class="text-base-content/60 text-sm">Physical files first, then embedded resources. Override any built-in template by placing a local file.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

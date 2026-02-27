@@ -1,0 +1,107 @@
+{% raw %}
+<section id="components" class="py-16">
+    <div class="max-w-4xl mx-auto px-6">
+        <h2 class="text-3xl font-bold mb-8">Components</h2>
+        <p class="text-base-content/70 mb-8">HTMX-powered behavioral components embedded in the library. Eject and customize any of them.</p>
+
+        <!-- Toast -->
+        <div class="card bg-base-100 shadow-sm mb-6">
+            <div class="card-body">
+                <h3 class="card-title">Toast</h3>
+                <p class="text-base-content/70 text-sm mb-3">Auto-dismissing notification that uses <code class="text-primary">hx-on::load</code> to self-remove after a configurable duration.</p>
+                <div class="code-block mb-3">
+<pre><code><span class="fn">{%</span> <span class="kw">render</span> <span class="str">'components/toast'</span>,
+    message: <span class="str">'Saved successfully!'</span>,
+    type: <span class="str">'success'</span>,
+    duration: <span class="str">3000</span>,
+    dismissible: <span class="str">true</span> <span class="fn">%}</span></code></pre>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="table table-sm">
+                        <thead><tr><th>Parameter</th><th>Default</th><th>Description</th></tr></thead>
+                        <tbody>
+                            <tr><td class="font-mono text-sm">message</td><td>required</td><td>The notification text</td></tr>
+                            <tr><td class="font-mono text-sm">type</td><td><code>"info"</code></td><td>Alert type: info, success, warning, error</td></tr>
+                            <tr><td class="font-mono text-sm">duration</td><td><code>3000</code></td><td>Auto-dismiss delay in milliseconds</td></tr>
+                            <tr><td class="font-mono text-sm">dismissible</td><td><code>true</code></td><td>Show close button</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Confirm Dialog -->
+        <div class="card bg-base-100 shadow-sm mb-6">
+            <div class="card-body">
+                <h3 class="card-title">Confirm Dialog</h3>
+                <p class="text-base-content/70 text-sm mb-3">Native <code class="text-primary">&lt;dialog&gt;</code> element with an HTMX confirm action. No server round-trip to show the dialog.</p>
+                <div class="code-block mb-3">
+<pre><code><span class="fn">{%</span> <span class="kw">render</span> <span class="str">'components/confirm-dialog'</span>,
+    id: <span class="str">'delete-user'</span>,
+    title: <span class="str">'Delete user?'</span>,
+    message: <span class="str">'This action cannot be undone.'</span>,
+    confirm_url: <span class="str">'/users/1'</span>,
+    confirm_method: <span class="str">'delete'</span> <span class="fn">%}</span></code></pre>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="table table-sm">
+                        <thead><tr><th>Parameter</th><th>Default</th><th>Description</th></tr></thead>
+                        <tbody>
+                            <tr><td class="font-mono text-sm">id</td><td>required</td><td>Unique dialog ID</td></tr>
+                            <tr><td class="font-mono text-sm">title</td><td>required</td><td>Dialog title</td></tr>
+                            <tr><td class="font-mono text-sm">message</td><td><code>""</code></td><td>Dialog body text</td></tr>
+                            <tr><td class="font-mono text-sm">confirm_url</td><td>required</td><td>URL to call on confirm</td></tr>
+                            <tr><td class="font-mono text-sm">confirm_method</td><td><code>"post"</code></td><td>HTTP verb for the confirm action</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal -->
+        <div class="card bg-base-100 shadow-sm mb-6">
+            <div class="card-body">
+                <h3 class="card-title">Modal</h3>
+                <p class="text-base-content/70 text-sm mb-3">HTMX-loaded modal that fetches content from the server when opened via <code class="text-primary">hx-get</code>.</p>
+                <div class="code-block mb-3">
+<pre><code><span class="fn">{%</span> <span class="kw">render</span> <span class="str">'components/modal'</span>,
+    id: <span class="str">'edit-user'</span>,
+    title: <span class="str">'Edit User'</span>,
+    url: <span class="str">'/users/1/edit'</span>,
+    trigger_label: <span class="str">'Edit'</span>,
+    size: <span class="str">'lg'</span> <span class="fn">%}</span></code></pre>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="table table-sm">
+                        <thead><tr><th>Parameter</th><th>Default</th><th>Description</th></tr></thead>
+                        <tbody>
+                            <tr><td class="font-mono text-sm">id</td><td>required</td><td>Unique modal ID</td></tr>
+                            <tr><td class="font-mono text-sm">title</td><td>required</td><td>Modal header title</td></tr>
+                            <tr><td class="font-mono text-sm">url</td><td>required</td><td>URL to fetch modal content from</td></tr>
+                            <tr><td class="font-mono text-sm">trigger_label</td><td><code>"Open"</code></td><td>Label for the trigger button</td></tr>
+                            <tr><td class="font-mono text-sm">size</td><td><code>"md"</code></td><td>Modal size: sm, md, lg</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Ejecting -->
+        <div class="card bg-base-200 shadow-sm">
+            <div class="card-body">
+                <h3 class="card-title">Ejecting Components</h3>
+                <p class="text-base-content/70 text-sm mb-3">Components are embedded in the DLL as <code>.liquid</code> templates. Eject them to your local <code>Templates/components/</code> directory to customize freely. Local files always take priority over embedded ones.</p>
+                <div class="code-block">
+<pre><code><span class="cmt">// Eject all components at once</span>
+fluid.<span class="fn">EjectAllComponents</span>();
+
+<span class="cmt">// Or eject one by one</span>
+fluid.<span class="fn">EjectComponent</span>(<span class="str">"toast"</span>);
+fluid.<span class="fn">EjectComponent</span>(<span class="str">"confirm-dialog"</span>);
+fluid.<span class="fn">EjectComponent</span>(<span class="str">"modal"</span>);</code></pre>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endraw %}

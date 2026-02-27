@@ -1,0 +1,93 @@
+{% raw %}
+<section id="filters" class="py-16">
+    <div class="max-w-4xl mx-auto px-6">
+        <h2 class="text-3xl font-bold mb-8">Filters</h2>
+        <p class="text-base-content/70 mb-8">Custom Liquid filters available in all templates.</p>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+            <!-- to_json -->
+            <div class="card bg-base-100 shadow-sm">
+                <div class="card-body">
+                    <h3 class="card-title font-mono text-primary text-base">to_json</h3>
+                    <p class="text-base-content/70 text-sm mb-3">Serializes any object to a JSON string.</p>
+                    <div class="code-block">
+<pre><code>{{ model | to_json }}
+<span class="cmt">&lt;!-- {"name":"Alice","age":30} --&gt;</span></code></pre>
+                    </div>
+                </div>
+            </div>
+
+            <!-- hx_vals -->
+            <div class="card bg-base-100 shadow-sm">
+                <div class="card-body">
+                    <h3 class="card-title font-mono text-primary text-base">hx_vals</h3>
+                    <p class="text-base-content/70 text-sm mb-3">Serializes to JSON for the <code>hx-vals</code> attribute.</p>
+                    <div class="code-block">
+<pre><code>&lt;div hx-vals='{{ data | hx_vals }}'&gt;
+  ...
+&lt;/div&gt;</code></pre>
+                    </div>
+                </div>
+            </div>
+
+            <!-- active_class -->
+            <div class="card bg-base-100 shadow-sm">
+                <div class="card-body">
+                    <h3 class="card-title font-mono text-primary text-base">active_class</h3>
+                    <p class="text-base-content/70 text-sm mb-3">Returns a CSS class if the input matches the current request path.</p>
+                    <div class="code-block">
+<pre><code>&lt;a class="{{ '/about' | active_class: 'btn-active' }}"
+   href=<span class="str">"/about"</span>&gt;
+  About
+&lt;/a&gt;
+<span class="cmt">&lt;!-- On /about → class="btn-active" --&gt;</span>
+<span class="cmt">&lt;!-- On /home  → class="" --&gt;</span></code></pre>
+                    </div>
+                </div>
+            </div>
+
+            <!-- pluralize -->
+            <div class="card bg-base-100 shadow-sm">
+                <div class="card-body">
+                    <h3 class="card-title font-mono text-primary text-base">pluralize</h3>
+                    <p class="text-base-content/70 text-sm mb-3">Returns singular or plural form based on count.</p>
+                    <div class="code-block">
+<pre><code>{{ count | pluralize: "item", "items" }}
+<span class="cmt">&lt;!-- 1 → "item", 5 → "items" --&gt;</span></code></pre>
+                    </div>
+                </div>
+            </div>
+
+            <!-- append_query -->
+            <div class="card bg-base-100 shadow-sm">
+                <div class="card-body">
+                    <h3 class="card-title font-mono text-primary text-base">append_query</h3>
+                    <p class="text-base-content/70 text-sm mb-3">Appends a query string parameter to a URL.</p>
+                    <div class="code-block">
+<pre><code>{{ "/search" | append_query: "page", "2" }}
+<span class="cmt">&lt;!-- /search?page=2 --&gt;</span>
+
+{{ "/search?q=test" | append_query: "page", "2" }}
+<span class="cmt">&lt;!-- /search?q=test&amp;page=2 --&gt;</span></code></pre>
+                    </div>
+                </div>
+            </div>
+
+            <!-- escape_attr -->
+            <div class="card bg-base-100 shadow-sm">
+                <div class="card-body">
+                    <h3 class="card-title font-mono text-primary text-base">escape_attr</h3>
+                    <p class="text-base-content/70 text-sm mb-3">HTML-encodes a string for safe use in attributes.</p>
+                    <div class="code-block">
+<pre><code>&lt;div data-msg="{{ message | escape_attr }}"&gt;
+  ...
+&lt;/div&gt;</code></pre>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+{% endraw %}

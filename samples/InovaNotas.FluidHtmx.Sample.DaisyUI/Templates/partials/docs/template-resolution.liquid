@@ -1,0 +1,60 @@
+<section id="template-resolution" class="py-16">
+    <div class="max-w-4xl mx-auto px-6">
+        <h2 class="text-3xl font-bold mb-8">Template Resolution</h2>
+        <p class="text-base-content/70 mb-8">How FluidHtmx finds and caches your templates.</p>
+
+        <h3 class="text-xl font-semibold mb-4">Resolution Order</h3>
+        <p class="text-base-content/70 mb-4">When a template is requested, FluidHtmx searches in this order:</p>
+        <ol class="list-decimal list-inside text-base-content/70 space-y-3 mb-8">
+            <li>
+                <strong>Physical files</strong> &mdash; your local <code class="text-primary">Templates/</code> directory (configured via <code>TemplatesPath</code>)
+            </li>
+            <li>
+                <strong>Embedded resources</strong> &mdash; templates bundled in the FluidHtmx DLL (components, error pages)
+            </li>
+        </ol>
+        <div class="alert alert-info mb-8">
+            <span>Physical files always win. Place a local file to override any embedded template.</span>
+        </div>
+
+        <h3 class="text-xl font-semibold mb-4">Directory Structure</h3>
+        <div class="code-block mb-8">
+<pre><code>Templates/
+  layouts/
+    main.liquid          <span class="cmt"># Layout templates</span>
+  pages/
+    home/
+      index.liquid       <span class="cmt"># Page templates</span>
+    about/
+      index.liquid
+  partials/
+    user-card.liquid     <span class="cmt"># Reusable partials</span>
+  components/
+    toast.liquid         <span class="cmt"># Ejected components</span></code></pre>
+        </div>
+
+        <h3 class="text-xl font-semibold mb-4">Template Caching</h3>
+        <p class="text-base-content/70 mb-4">Parsed templates are cached in a thread-safe <code class="text-primary">ConcurrentDictionary</code> with per-key semaphore locking to prevent stampedes. The cache is:</p>
+        <ul class="list-disc list-inside text-base-content/70 space-y-2 mb-8">
+            <li><strong>Persistent</strong> in production &mdash; templates are parsed once and served from memory</li>
+            <li><strong>Invalidated on save</strong> in development (when <code>EnableHotReload</code> is true) &mdash; a <code>FileSystemWatcher</code> monitors <code>*.liquid</code> files and invalidates the cache with a 50ms debounce</li>
+        </ul>
+
+        <h3 class="text-xl font-semibold mb-4">Error Handling</h3>
+        <p class="text-base-content/70 mb-4">In development, FluidHtmx shows styled error pages:</p>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="card bg-base-100 shadow-sm">
+                <div class="card-body">
+                    <h4 class="card-title text-base">Template Not Found</h4>
+                    <p class="text-base-content/70 text-sm">Lists all search paths that were checked, helping you spot typos or missing files.</p>
+                </div>
+            </div>
+            <div class="card bg-base-100 shadow-sm">
+                <div class="card-body">
+                    <h4 class="card-title text-base">Parse Error</h4>
+                    <p class="text-base-content/70 text-sm">Shows the template source with the offending line highlighted, plus the Fluid parser error message.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

@@ -1,0 +1,162 @@
+{% raw %}
+<section id="response-helpers" class="py-16 bg-base-200">
+    <div class="max-w-4xl mx-auto px-6">
+        <h2 class="text-3xl font-bold mb-8">Response Helpers</h2>
+        <p class="text-base-content/70 mb-8">Extension methods on <code class="text-primary">HttpResponse</code> for controlling HTMX behavior from your endpoints.</p>
+
+        <h3 class="text-xl font-semibold mb-4">Usage</h3>
+        <div class="code-block mb-8">
+<pre><code>app.<span class="fn">MapPost</span>(<span class="str">"/users"</span>, (<span class="typ">HttpContext</span> ctx) =>
+{
+    <span class="cmt">// ... create user</span>
+    ctx.Response.<span class="fn">HxTrigger</span>(<span class="str">"user-created"</span>);
+    ctx.Response.<span class="fn">HxRetarget</span>(<span class="str">"#user-list"</span>);
+    ctx.Response.<span class="fn">HxReswap</span>(<span class="str">"beforeend"</span>);
+    <span class="kw">return</span> Results.<span class="fn">Ok</span>();
+});</code></pre>
+        </div>
+
+        <h3 class="text-xl font-semibold mb-4">Available Methods</h3>
+        <div class="overflow-x-auto mb-8">
+            <table class="table table-zebra bg-base-100 rounded-xl">
+                <thead>
+                    <tr>
+                        <th>Method</th>
+                        <th>Header</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="font-mono text-primary text-sm">HxLocation(url)</td>
+                        <td class="font-mono text-xs">HX-Location</td>
+                        <td>Client-side redirect without full page reload</td>
+                    </tr>
+                    <tr>
+                        <td class="font-mono text-primary text-sm">HxPushUrl(url)</td>
+                        <td class="font-mono text-xs">HX-Push-Url</td>
+                        <td>Push a new URL into browser history</td>
+                    </tr>
+                    <tr>
+                        <td class="font-mono text-primary text-sm">HxRedirect(url)</td>
+                        <td class="font-mono text-xs">HX-Redirect</td>
+                        <td>Full browser redirect</td>
+                    </tr>
+                    <tr>
+                        <td class="font-mono text-primary text-sm">HxRefresh()</td>
+                        <td class="font-mono text-xs">HX-Refresh</td>
+                        <td>Force a full page refresh</td>
+                    </tr>
+                    <tr>
+                        <td class="font-mono text-primary text-sm">HxReplaceUrl(url)</td>
+                        <td class="font-mono text-xs">HX-Replace-Url</td>
+                        <td>Replace current URL without pushing to history</td>
+                    </tr>
+                    <tr>
+                        <td class="font-mono text-primary text-sm">HxReswap(strategy)</td>
+                        <td class="font-mono text-xs">HX-Reswap</td>
+                        <td>Override the swap strategy</td>
+                    </tr>
+                    <tr>
+                        <td class="font-mono text-primary text-sm">HxRetarget(selector)</td>
+                        <td class="font-mono text-xs">HX-Retarget</td>
+                        <td>Override the target element</td>
+                    </tr>
+                    <tr>
+                        <td class="font-mono text-primary text-sm">HxReselect(selector)</td>
+                        <td class="font-mono text-xs">HX-Reselect</td>
+                        <td>Select specific content from the response</td>
+                    </tr>
+                    <tr>
+                        <td class="font-mono text-primary text-sm">HxTrigger(event)</td>
+                        <td class="font-mono text-xs">HX-Trigger</td>
+                        <td>Trigger a client-side event</td>
+                    </tr>
+                    <tr>
+                        <td class="font-mono text-primary text-sm">HxTrigger(event, data)</td>
+                        <td class="font-mono text-xs">HX-Trigger</td>
+                        <td>Trigger event with JSON data</td>
+                    </tr>
+                    <tr>
+                        <td class="font-mono text-primary text-sm">HxTriggerAfterSettle(event)</td>
+                        <td class="font-mono text-xs">HX-Trigger-After-Settle</td>
+                        <td>Trigger after DOM settles</td>
+                    </tr>
+                    <tr>
+                        <td class="font-mono text-primary text-sm">HxTriggerAfterSwap(event)</td>
+                        <td class="font-mono text-xs">HX-Trigger-After-Swap</td>
+                        <td>Trigger after content swaps</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h3 class="text-xl font-semibold mb-4">GetHtmxContext()</h3>
+        <p class="text-base-content/70 mb-4">Read parsed HTMX request headers from <code class="text-primary">HttpContext</code>:</p>
+        <div class="code-block mb-4">
+<pre><code>app.<span class="fn">MapPost</span>(<span class="str">"/submit"</span>, (<span class="typ">HttpContext</span> ctx) =>
+{
+    <span class="kw">var</span> htmx = ctx.<span class="fn">GetHtmxContext</span>();
+
+    <span class="kw">if</span> (htmx.IsHtmx)    { <span class="cmt">/* HTMX request */</span> }
+    <span class="kw">if</span> (htmx.IsBoosted)  { <span class="cmt">/* boosted navigation */</span> }
+
+    <span class="kw">var</span> target = htmx.Target;       <span class="cmt">// HX-Target header</span>
+    <span class="kw">var</span> trigger = htmx.TriggerName;  <span class="cmt">// HX-Trigger-Name header</span>
+    <span class="kw">var</span> prompt = htmx.Prompt;        <span class="cmt">// HX-Prompt header</span>
+    <span class="kw">var</span> url = htmx.CurrentUrl;       <span class="cmt">// HX-Current-URL header</span>
+});</code></pre>
+        </div>
+
+        <h3 class="text-xl font-semibold mb-4">HtmxRequestContext Properties</h3>
+        <div class="overflow-x-auto">
+            <table class="table table-zebra bg-base-100 rounded-xl">
+                <thead>
+                    <tr>
+                        <th>Property</th>
+                        <th>Type</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="font-mono text-primary text-sm">IsHtmx</td>
+                        <td class="font-mono text-sm">bool</td>
+                        <td>HX-Request header present</td>
+                    </tr>
+                    <tr>
+                        <td class="font-mono text-primary text-sm">IsBoosted</td>
+                        <td class="font-mono text-sm">bool</td>
+                        <td>HX-Boosted header present</td>
+                    </tr>
+                    <tr>
+                        <td class="font-mono text-primary text-sm">CurrentUrl</td>
+                        <td class="font-mono text-sm">string?</td>
+                        <td>HX-Current-URL header value</td>
+                    </tr>
+                    <tr>
+                        <td class="font-mono text-primary text-sm">IsHistoryRestoreRequest</td>
+                        <td class="font-mono text-sm">bool</td>
+                        <td>HX-History-Restore-Request header present</td>
+                    </tr>
+                    <tr>
+                        <td class="font-mono text-primary text-sm">Prompt</td>
+                        <td class="font-mono text-sm">string?</td>
+                        <td>HX-Prompt dialog result</td>
+                    </tr>
+                    <tr>
+                        <td class="font-mono text-primary text-sm">Target</td>
+                        <td class="font-mono text-sm">string?</td>
+                        <td>HX-Target element ID</td>
+                    </tr>
+                    <tr>
+                        <td class="font-mono text-primary text-sm">TriggerName</td>
+                        <td class="font-mono text-sm">string?</td>
+                        <td>HX-Trigger-Name header value</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</section>
+{% endraw %}

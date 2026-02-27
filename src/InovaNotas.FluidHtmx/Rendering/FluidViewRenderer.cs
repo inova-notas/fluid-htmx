@@ -50,7 +50,8 @@ public class FluidViewRenderer : IViewRenderer
     public async Task<IResult> RenderAsync<TLayout>(HttpContext httpContext, string templateName, object? model = null)
         where TLayout : LayoutDefinition, new()
     {
-        var isHtmxRequest = httpContext.Request.Headers.ContainsKey(HtmxHeaders.Request);
+        var isHtmxRequest = httpContext.Request.Headers.ContainsKey(HtmxHeaders.Request)
+                             && !httpContext.Request.Headers.ContainsKey(HtmxHeaders.Boosted);
 
         if (isHtmxRequest)
         {

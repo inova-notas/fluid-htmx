@@ -1,9 +1,0 @@
-{% case type %}
-  {% when 'success' %}{% assign type_class = 'alert-success' %}
-  {% when 'warning' %}{% assign type_class = 'alert-warning' %}
-  {% when 'error' %}{% assign type_class = 'alert-error' %}
-  {% else %}{% assign type_class = 'alert-info' %}
-{% endcase %}
-<div class="alert {{ type_class }}" role="alert">
-  {{ message }}
-</div>

@@ -1,0 +1,77 @@
+{% raw %}
+<section id="layouts" class="py-16 bg-base-200">
+    <div class="max-w-4xl mx-auto px-6">
+        <h2 class="text-3xl font-bold mb-8">Layouts</h2>
+
+        <h3 class="text-xl font-semibold mb-4">LayoutDefinition</h3>
+        <p class="text-base-content/70 mb-4">Every layout extends <code class="text-primary">LayoutDefinition</code> and specifies a template name. The renderer resolves it to <code>layouts/{TemplateName}.liquid</code>.</p>
+        <div class="code-block mb-8">
+<pre><code><span class="kw">public class</span> <span class="typ">MainLayout</span> : <span class="typ">LayoutDefinition</span>
+{
+    <span class="kw">public override string</span> TemplateName => <span class="str">"main"</span>;
+    <span class="cmt">// resolves to Templates/layouts/main.liquid</span>
+}</code></pre>
+        </div>
+
+        <h3 class="text-xl font-semibold mb-4">ILayoutDataProvider&lt;T&gt;</h3>
+        <p class="text-base-content/70 mb-4">Implement this interface to inject variables into the layout template context. Called on every full-page render (not on HTMX partial requests).</p>
+        <div class="code-block mb-8">
+<pre><code><span class="kw">public class</span> <span class="typ">MainLayoutDataProvider</span> : <span class="typ">ILayoutDataProvider</span>&lt;<span class="typ">MainLayout</span>&gt;
+{
+    <span class="kw">public</span> Task&lt;Dictionary&lt;<span class="kw">string</span>, <span class="kw">object</span>&gt;&gt; <span class="fn">GetDataAsync</span>(<span class="typ">HttpContext</span> httpContext)
+    {
+        <span class="kw">var</span> data = <span class="kw">new</span> Dictionary&lt;<span class="kw">string</span>, <span class="kw">object</span>&gt;
+        {
+            [<span class="str">"app_name"</span>] = <span class="str">"My App"</span>,
+            [<span class="str">"current_year"</span>] = DateTime.UtcNow.Year
+        };
+        <span class="kw">return</span> Task.<span class="fn">FromResult</span>(data);
+    }
+}</code></pre>
+        </div>
+
+        <h3 class="text-xl font-semibold mb-4">Auto-injected Variables</h3>
+        <p class="text-base-content/70 mb-4">The renderer always provides these variables in layout templates, regardless of a data provider:</p>
+        <div class="overflow-x-auto mb-8">
+            <table class="table table-zebra bg-base-100 rounded-xl">
+                <thead>
+                    <tr>
+                        <th>Variable</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="font-mono text-primary text-sm">content</td>
+                        <td>The rendered inner page HTML</td>
+                    </tr>
+                    <tr>
+                        <td class="font-mono text-primary text-sm">_request_path</td>
+                        <td>Current request path (e.g., <code>"/about"</code>)</td>
+                    </tr>
+                    <tr>
+                        <td class="font-mono text-primary text-sm">model</td>
+                        <td>The page model object, if provided</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h3 class="text-xl font-semibold mb-4">Multiple Layouts</h3>
+        <p class="text-base-content/70 mb-4">Register multiple layouts and pick per-route using the generic <code class="text-primary">RenderAsync&lt;TLayout&gt;</code> overload:</p>
+        <div class="code-block mb-4">
+<pre><code><span class="cmt">// Registration</span>
+fluid.<span class="fn">DefaultLayout</span>&lt;<span class="typ">MainLayout</span>&gt;();
+fluid.<span class="fn">AddLayout</span>&lt;<span class="typ">MainLayout</span>, <span class="typ">MainLayoutDataProvider</span>&gt;();
+fluid.<span class="fn">AddLayout</span>&lt;<span class="typ">AdminLayout</span>, <span class="typ">AdminLayoutDataProvider</span>&gt;();
+
+<span class="cmt">// Routes</span>
+app.<span class="fn">MapGet</span>(<span class="str">"/"</span>, (<span class="typ">IViewRenderer</span> view, <span class="typ">HttpContext</span> ctx) =>
+    view.<span class="fn">RenderAsync</span>(ctx, <span class="str">"pages/home/index"</span>));             <span class="cmt">// uses DefaultLayout</span>
+
+app.<span class="fn">MapGet</span>(<span class="str">"/admin"</span>, (<span class="typ">IViewRenderer</span> view, <span class="typ">HttpContext</span> ctx) =>
+    view.<span class="fn">RenderAsync</span>&lt;<span class="typ">AdminLayout</span>&gt;(ctx, <span class="str">"pages/admin/index"</span>)); <span class="cmt">// explicit layout</span></code></pre>
+        </div>
+    </div>
+</section>
+{% endraw %}

@@ -1,0 +1,181 @@
+{% raw %}
+<section id="htmx-tags" class="py-24 bg-base-200">
+    <div class="max-w-5xl mx-auto px-6">
+        <div class="text-center mb-16">
+            <h2 class="text-4xl font-bold">HTMX Tags</h2>
+            <p class="mt-4 text-lg text-base-content/60">Custom Liquid tags that generate HTMX-enabled HTML</p>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <!-- Links -->
+            <div class="card bg-base-100 shadow-sm">
+                <div class="card-body">
+                    <h3 class="card-title font-mono text-primary">hx_link</h3>
+                    <p class="text-base-content/70 text-sm">HTMX-enabled anchor with automatic partial swap</p>
+                    <div class="code-block mt-3">
+<pre><code><span class="fn">{%</span> <span class="kw">hx_link</span> <span class="str">"/about"</span>,
+    target: <span class="str">"#main-content"</span>,
+    swap: <span class="str">"innerHTML"</span>,
+    push_url: <span class="str">"true"</span> <span class="fn">%}</span>
+  About
+<span class="fn">{%</span> <span class="kw">endhx_link</span> <span class="fn">%}</span></code></pre>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Buttons -->
+            <div class="card bg-base-100 shadow-sm">
+                <div class="card-body">
+                    <h3 class="card-title font-mono text-primary">hx_button</h3>
+                    <p class="text-base-content/70 text-sm">HTMX button with method, target, and confirm</p>
+                    <div class="code-block mt-3">
+<pre><code><span class="fn">{%</span> <span class="kw">hx_button</span> <span class="str">"/users/1"</span>,
+    method: <span class="str">"delete"</span>,
+    confirm: <span class="str">"Are you sure?"</span>,
+    class: <span class="str">"btn btn-error"</span> <span class="fn">%}</span>
+  Delete
+<span class="fn">{%</span> <span class="kw">endhx_button</span> <span class="fn">%}</span></code></pre>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Forms -->
+            <div class="card bg-base-100 shadow-sm">
+                <div class="card-body">
+                    <h3 class="card-title font-mono text-primary">hx_form</h3>
+                    <p class="text-base-content/70 text-sm">HTMX form that posts and swaps the result</p>
+                    <div class="code-block mt-3">
+<pre><code><span class="fn">{%</span> <span class="kw">hx_form</span> <span class="str">"/users"</span>,
+    method: <span class="str">"post"</span>,
+    target: <span class="str">"#user-list"</span>,
+    swap: <span class="str">"beforeend"</span> <span class="fn">%}</span>
+  &lt;input name=<span class="str">"name"</span> /&gt;
+  &lt;button type=<span class="str">"submit"</span>&gt;Add&lt;/button&gt;
+<span class="fn">{%</span> <span class="kw">endhx_form</span> <span class="fn">%}</span></code></pre>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Lazy -->
+            <div class="card bg-base-100 shadow-sm">
+                <div class="card-body">
+                    <h3 class="card-title font-mono text-primary">hx_lazy</h3>
+                    <p class="text-base-content/70 text-sm">Lazy-loaded content fetched on viewport entry</p>
+                    <div class="code-block mt-3">
+<pre><code><span class="fn">{%</span> <span class="kw">hx_lazy</span> <span class="str">"/partials/stats"</span> <span class="fn">%}</span>
+  Loading...
+<span class="fn">{%</span> <span class="kw">endhx_lazy</span> <span class="fn">%}</span></code></pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- More tags table -->
+        <div class="mt-12">
+            <div class="overflow-x-auto">
+                <table class="table table-zebra bg-base-100 rounded-xl">
+                    <thead>
+                        <tr>
+                            <th>Tag</th>
+                            <th>Description</th>
+                            <th>Example</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="font-mono text-primary text-sm">hx_script</td>
+                            <td>Injects the HTMX script tag</td>
+                            <td class="font-mono text-sm">{% hx_script %}</td>
+                        </tr>
+                        <tr>
+                            <td class="font-mono text-primary text-sm">hx_swap_oob</td>
+                            <td>Out-of-band swap for updating multiple targets</td>
+                            <td class="font-mono text-sm">{% hx_swap_oob "#notif" %}...{% endhx_swap_oob %}</td>
+                        </tr>
+                        <tr>
+                            <td class="font-mono text-primary text-sm">csrf_token</td>
+                            <td>Anti-forgery hidden input</td>
+                            <td class="font-mono text-sm">{% csrf_token %}</td>
+                        </tr>
+                        <tr>
+                            <td class="font-mono text-primary text-sm">hx_indicator</td>
+                            <td>Loading spinner for HTMX requests</td>
+                            <td class="font-mono text-sm">{% hx_indicator %}</td>
+                        </tr>
+                        <tr>
+                            <td class="font-mono text-primary text-sm">asset_css / asset_js</td>
+                            <td>CSS/JS links with SHA256 cache busting in production</td>
+                            <td class="font-mono text-sm">{% asset_css "/css/app.css" %}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Filters -->
+        <div class="mt-16">
+            <h3 class="text-2xl font-bold mb-6 text-center">Filters</h3>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                <div class="bg-base-100 rounded-xl p-5">
+                    <p class="font-mono text-primary text-sm font-semibold">to_json</p>
+                    <p class="text-base-content/60 text-sm mt-1">Serialize to JSON</p>
+                    <p class="font-mono text-xs mt-2 text-base-content/40">{{ model | to_json }}</p>
+                </div>
+                <div class="bg-base-100 rounded-xl p-5">
+                    <p class="font-mono text-primary text-sm font-semibold">hx_vals</p>
+                    <p class="text-base-content/60 text-sm mt-1">JSON for hx-vals attribute</p>
+                    <p class="font-mono text-xs mt-2 text-base-content/40">{{ data | hx_vals }}</p>
+                </div>
+                <div class="bg-base-100 rounded-xl p-5">
+                    <p class="font-mono text-primary text-sm font-semibold">active_class</p>
+                    <p class="text-base-content/60 text-sm mt-1">Active CSS class for nav</p>
+                    <p class="font-mono text-xs mt-2 text-base-content/40">{{ "/about" | active_class: "btn-active" }}</p>
+                </div>
+                <div class="bg-base-100 rounded-xl p-5">
+                    <p class="font-mono text-primary text-sm font-semibold">pluralize</p>
+                    <p class="text-base-content/60 text-sm mt-1">Singular/plural forms</p>
+                    <p class="font-mono text-xs mt-2 text-base-content/40">{{ count | pluralize: "item", "items" }}</p>
+                </div>
+                <div class="bg-base-100 rounded-xl p-5">
+                    <p class="font-mono text-primary text-sm font-semibold">append_query</p>
+                    <p class="text-base-content/60 text-sm mt-1">Add query parameter to URL</p>
+                    <p class="font-mono text-xs mt-2 text-base-content/40">{{ "/users" | append_query: "page", "2" }}</p>
+                </div>
+                <div class="bg-base-100 rounded-xl p-5">
+                    <p class="font-mono text-primary text-sm font-semibold">escape_attr</p>
+                    <p class="text-base-content/60 text-sm mt-1">HTML-encode for attributes</p>
+                    <p class="font-mono text-xs mt-2 text-base-content/40">{{ value | escape_attr }}</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Response helpers -->
+        <div class="mt-16">
+            <h3 class="text-2xl font-bold mb-6 text-center">Response Helpers</h3>
+            <p class="text-center text-base-content/60 mb-8">Server-side extensions for controlling HTMX behavior from your endpoints</p>
+            <div class="code-block max-w-3xl mx-auto">
+<pre><code>app.<span class="fn">MapPost</span>(<span class="str">"/users"</span>, (<span class="typ">HttpContext</span> ctx) =>
+{
+    <span class="cmt">// ... create user</span>
+    ctx.Response.<span class="fn">HxTrigger</span>(<span class="str">"user-created"</span>);
+    ctx.Response.<span class="fn">HxRetarget</span>(<span class="str">"#user-list"</span>);
+    <span class="kw">return</span> Results.<span class="fn">Ok</span>();
+});</code></pre>
+            </div>
+            <div class="flex flex-wrap justify-center gap-2 mt-6">
+                <span class="badge badge-outline font-mono text-xs">HxLocation</span>
+                <span class="badge badge-outline font-mono text-xs">HxPushUrl</span>
+                <span class="badge badge-outline font-mono text-xs">HxRedirect</span>
+                <span class="badge badge-outline font-mono text-xs">HxRefresh</span>
+                <span class="badge badge-outline font-mono text-xs">HxReplaceUrl</span>
+                <span class="badge badge-outline font-mono text-xs">HxReswap</span>
+                <span class="badge badge-outline font-mono text-xs">HxRetarget</span>
+                <span class="badge badge-outline font-mono text-xs">HxReselect</span>
+                <span class="badge badge-outline font-mono text-xs">HxTrigger</span>
+                <span class="badge badge-outline font-mono text-xs">HxTriggerAfterSettle</span>
+                <span class="badge badge-outline font-mono text-xs">HxTriggerAfterSwap</span>
+            </div>
+        </div>
+    </div>
+</section>
+{% endraw %}

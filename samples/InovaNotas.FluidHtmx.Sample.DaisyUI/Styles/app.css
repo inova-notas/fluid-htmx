@@ -8,4 +8,11 @@
 }
 @plugin "./daisyui-theme.mjs";
 
-
+.code-block { background: oklch(0.2 0.01 260); border-radius: 0.75rem; overflow-x: auto; }
+.code-block pre { margin: 0; padding: 1.25rem 1.5rem; font-size: 0.875rem; line-height: 1.7; }
+.code-block code { color: oklch(0.85 0.02 260); }
+.code-block .kw  { color: oklch(0.75 0.15 300); }
+.code-block .str { color: oklch(0.78 0.14 150); }
+.code-block .cmt { color: oklch(0.55 0.02 260); }
+.code-block .typ { color: oklch(0.8 0.14 80); }
+.code-block .fn  { color: oklch(0.82 0.12 210); }

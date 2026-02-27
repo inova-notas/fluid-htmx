@@ -38,12 +38,12 @@ public class EjectComponentTests : IDisposable
     {
         var builder = CreateBuilder();
 
-        builder.EjectComponent("alert");
+        builder.EjectComponent("toast");
 
-        var destPath = Path.Combine(_tempDir, "Templates", "components", "alert.liquid");
+        var destPath = Path.Combine(_tempDir, "Templates", "components", "toast.liquid");
         File.Exists(destPath).Should().BeTrue();
         var content = File.ReadAllText(destPath);
-        content.Should().Contain("alert");
+        content.Should().Contain("toast");
     }
 
     [Fact]
@@ -52,10 +52,10 @@ public class EjectComponentTests : IDisposable
         var builder = CreateBuilder();
         var destDir = Path.Combine(_tempDir, "Templates", "components");
         Directory.CreateDirectory(destDir);
-        var destPath = Path.Combine(destDir, "alert.liquid");
+        var destPath = Path.Combine(destDir, "toast.liquid");
         File.WriteAllText(destPath, "custom content");
 
-        builder.EjectComponent("alert");
+        builder.EjectComponent("toast");
 
         File.ReadAllText(destPath).Should().Be("custom content");
     }
@@ -85,16 +85,10 @@ public class EjectComponentTests : IDisposable
             .Select(Path.GetFileNameWithoutExtension)
             .ToList();
 
-        files.Should().Contain("alert");
-        files.Should().Contain("badge");
-        files.Should().Contain("breadcrumb");
-        files.Should().Contain("pagination");
-        files.Should().Contain("table");
-        files.Should().Contain("empty-state");
         files.Should().Contain("toast");
         files.Should().Contain("confirm-dialog");
         files.Should().Contain("modal");
-        files.Should().Contain("dropdown");
+        files.Should().HaveCount(3);
     }
 
     [Fact]
@@ -103,9 +97,9 @@ public class EjectComponentTests : IDisposable
         var builder = CreateBuilder();
         builder.TemplatesPath("Views");
 
-        builder.EjectComponent("badge");
+        builder.EjectComponent("modal");
 
-        var destPath = Path.Combine(_tempDir, "Views", "components", "badge.liquid");
+        var destPath = Path.Combine(_tempDir, "Views", "components", "modal.liquid");
         File.Exists(destPath).Should().BeTrue();
     }
 
@@ -114,7 +108,7 @@ public class EjectComponentTests : IDisposable
     {
         var builder = CreateBuilder();
 
-        var result = builder.EjectComponent("alert");
+        var result = builder.EjectComponent("toast");
 
         result.Should().BeSameAs(builder);
     }

@@ -1,0 +1,86 @@
+{% raw %}
+<section id="setup" class="py-16">
+    <div class="max-w-4xl mx-auto px-6">
+        <h2 class="text-3xl font-bold mb-8">Setup</h2>
+
+        <h3 class="text-xl font-semibold mb-4">Installation</h3>
+        <div class="code-block mb-8">
+            <pre><code><span class="cmt">$</span> dotnet add package <span class="str">InovaNotas.FluidHtmx</span></code></pre>
+        </div>
+
+        <h3 class="text-xl font-semibold mb-4">Service Registration</h3>
+        <p class="text-base-content/70 mb-4">Call <code class="text-primary">AddFluidHtmx</code> in your <code>Program.cs</code> to register all services:</p>
+        <div class="code-block mb-8">
+<pre><code>builder.Services.<span class="fn">AddFluidHtmx</span>(fluid =>
+{
+    fluid.<span class="fn">TemplatesPath</span>(<span class="str">"Templates"</span>);          <span class="cmt">// default: "Templates"</span>
+    fluid.<span class="fn">EnableHotReload</span>(builder.Environment.<span class="fn">IsDevelopment</span>());
+    fluid.<span class="fn">Assets</span>(assets => assets.<span class="fn">EnableTailwind</span>(<span class="str">"v4.2.0"</span>));
+    fluid.<span class="fn">DefaultLayout</span>&lt;<span class="typ">MainLayout</span>&gt;();
+    fluid.<span class="fn">AddLayout</span>&lt;<span class="typ">MainLayout</span>, <span class="typ">MainLayoutDataProvider</span>&gt;();
+    fluid.<span class="fn">EjectAllComponents</span>();
+});</code></pre>
+        </div>
+
+        <h3 class="text-xl font-semibold mb-4">Builder Methods</h3>
+        <div class="overflow-x-auto mb-8">
+            <table class="table table-zebra bg-base-100 rounded-xl">
+                <thead>
+                    <tr>
+                        <th>Method</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="font-mono text-primary text-sm">TemplatesPath(path)</td>
+                        <td>Directory for <code>.liquid</code> files, relative to app root. Default: <code>"Templates"</code></td>
+                    </tr>
+                    <tr>
+                        <td class="font-mono text-primary text-sm">EnableHotReload(bool)</td>
+                        <td>File watcher that invalidates template cache on save. Default: <code>false</code></td>
+                    </tr>
+                    <tr>
+                        <td class="font-mono text-primary text-sm">Assets(configure)</td>
+                        <td>Configure asset pipeline (Tailwind CSS)</td>
+                    </tr>
+                    <tr>
+                        <td class="font-mono text-primary text-sm">DefaultLayout&lt;T&gt;()</td>
+                        <td>Set the layout used by <code>RenderAsync(ctx, template)</code> without a generic parameter</td>
+                    </tr>
+                    <tr>
+                        <td class="font-mono text-primary text-sm">AddLayout&lt;T, TProvider&gt;()</td>
+                        <td>Register a layout with its data provider (scoped DI)</td>
+                    </tr>
+                    <tr>
+                        <td class="font-mono text-primary text-sm">AddLayout&lt;T&gt;()</td>
+                        <td>Register a layout without a data provider</td>
+                    </tr>
+                    <tr>
+                        <td class="font-mono text-primary text-sm">EjectComponent(name)</td>
+                        <td>Copy a named embedded component to local <code>Templates/components/</code></td>
+                    </tr>
+                    <tr>
+                        <td class="font-mono text-primary text-sm">EjectAllComponents()</td>
+                        <td>Eject every embedded component template</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h3 class="text-xl font-semibold mb-4">Middleware</h3>
+        <p class="text-base-content/70 mb-4"><code class="text-primary">UseHtmx()</code> registers three things in order:</p>
+        <div class="code-block mb-4">
+<pre><code><span class="kw">var</span> app = builder.<span class="fn">Build</span>();
+
+app.<span class="fn">UseStaticFiles</span>();
+app.<span class="fn">UseHtmx</span>();         <span class="cmt">// error pages + HTMX header parsing + embedded JS</span></code></pre>
+        </div>
+        <ol class="list-decimal list-inside text-base-content/70 space-y-2">
+            <li><strong>DevelopmentErrorPageMiddleware</strong> &mdash; styled error pages for template parse/not-found errors (Development only)</li>
+            <li><strong>HtmxMiddleware</strong> &mdash; parses HTMX request headers into <code class="text-primary">HtmxRequestContext</code></li>
+            <li><strong>Embedded static files</strong> &mdash; serves the bundled <code>htmx.min.js</code> from <code>/js/</code></li>
+        </ol>
+    </div>
+</section>
+{% endraw %}

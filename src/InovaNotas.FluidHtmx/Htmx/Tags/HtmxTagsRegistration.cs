@@ -42,11 +42,26 @@ public static class HtmxTagsRegistration
         {
             var p = new TagParams(args, context);
             var url = await p.RequirePositional();
-            var target = p.Get("target") ?? DefaultTarget;
-            var swap = p.Get("swap") ?? DefaultSwap;
-            var pushUrl = p.Get("push_url") ?? "true";
+            var boost = p.Get("boost");
+            var cssClass = p.Get("class");
 
-            await writer.WriteAsync($"<a href=\"{Enc(url)}\" hx-get=\"{Enc(url)}\" hx-target=\"{Enc(target)}\" hx-swap=\"{Enc(swap)}\" hx-push-url=\"{Enc(pushUrl)}\">");
+            if (boost is not null)
+            {
+                await writer.WriteAsync($"<a href=\"{Enc(url)}\" hx-boost=\"true\"");
+            }
+            else
+            {
+                var target = p.Get("target") ?? DefaultTarget;
+                var swap = p.Get("swap") ?? DefaultSwap;
+                var pushUrl = p.Get("push_url") ?? "true";
+
+                await writer.WriteAsync($"<a href=\"{Enc(url)}\" hx-get=\"{Enc(url)}\" hx-target=\"{Enc(target)}\" hx-swap=\"{Enc(swap)}\" hx-push-url=\"{Enc(pushUrl)}\"");
+            }
+
+            if (cssClass is not null)
+                await writer.WriteAsync($" class=\"{Enc(cssClass)}\"");
+
+            await writer.WriteAsync(">");
             await RenderStatementsAsync(statements, writer, encoder, context);
             await writer.WriteAsync("</a>");
 

@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{{ app_name | default: "FluidHtmx" }} — Server-Side Rendering with Fluid + HTMX</title>
+    <meta name="description" content="Build server-side rendered web apps with Fluid (Liquid) templates and HTMX for ASP.NET Core. No JavaScript framework required." />
+    {% asset_css "/css/app.css" %}
+    <style>
+        html { scroll-behavior: smooth; }
+        .section-fade { animation: fadeUp 0.5s ease-out both; }
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(1.5rem); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body class="min-h-screen bg-base-200 text-base-content">
+
+    <div class="navbar bg-base-100/80 backdrop-blur-md sticky top-0 z-50 border-b border-base-300">
+        <div class="navbar-start">
+            <a class="btn btn-ghost text-xl font-bold" href="/">FluidHtmx</a>
+        </div>
+        <div class="navbar-center hidden lg:flex">
+            <ul class="menu menu-horizontal px-1 gap-1">
+                {% for section in nav_sections %}
+                <li><a href="#{{ section.id }}" class="text-sm">{{ section.label }}</a></li>
+                {% endfor %}
+            </ul>
+        </div>
+        <div class="navbar-end gap-2">
+            <a href="{{ repo_url }}" class="btn btn-ghost btn-sm" target="_blank" rel="noopener">GitHub</a>
+            <a href="/docs" hx-boost="true" class="btn btn-primary btn-sm">Documentation</a>
+        </div>
+    </div>
+
+    <main>
+        {{ content }}
+    </main>
+
+    <footer class="bg-base-100 border-t border-base-300">
+        <div class="max-w-6xl mx-auto px-6 py-12 text-center">
+            <p class="text-base-content/60 text-sm">&copy; {{ current_year }} {{ app_name }}. Released under the MIT License.</p>
+            <p class="text-base-content/40 text-xs mt-2">Built with FluidHtmx + DaisyUI + HTMX</p>
+        </div>
+    </footer>
+
+    {% hx_script %}
+</body>
+</html>

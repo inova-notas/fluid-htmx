@@ -1,0 +1,106 @@
+{% raw %}
+<section id="quick-start" class="py-24 bg-base-100">
+    <div class="max-w-5xl mx-auto px-6">
+        <div class="text-center mb-16">
+            <h2 class="text-4xl font-bold">Quick Start</h2>
+            <p class="mt-4 text-lg text-base-content/60">Three files to get a page rendering</p>
+        </div>
+
+        <!-- Step 1 -->
+        <div class="mb-12">
+            <div class="flex items-center gap-3 mb-4">
+                <span class="badge badge-primary badge-lg font-mono">1</span>
+                <h3 class="text-xl font-semibold">Configure in Program.cs</h3>
+            </div>
+            <div class="code-block">
+<pre><code><span class="kw">var</span> builder = WebApplication.CreateBuilder(args);
+
+builder.Services.<span class="fn">AddFluidHtmx</span>(fluid =>
+{
+    fluid.<span class="fn">TemplatesPath</span>(<span class="str">"Templates"</span>);
+    fluid.<span class="fn">DefaultLayout</span>&lt;<span class="typ">MainLayout</span>&gt;();
+});
+
+<span class="kw">var</span> app = builder.<span class="fn">Build</span>();
+
+app.<span class="fn">UseStaticFiles</span>();
+
+app.<span class="fn">MapGet</span>(<span class="str">"/"</span>, (<span class="typ">IViewRenderer</span> view, <span class="typ">HttpContext</span> ctx) =>
+    view.<span class="fn">RenderAsync</span>(ctx, <span class="str">"pages/home/index"</span>));
+
+app.<span class="fn">Run</span>();</code></pre>
+            </div>
+        </div>
+
+        <!-- Step 2 -->
+        <div class="mb-12">
+            <div class="flex items-center gap-3 mb-4">
+                <span class="badge badge-primary badge-lg font-mono">2</span>
+                <h3 class="text-xl font-semibold">Define a layout</h3>
+            </div>
+            <div class="code-block">
+<pre><code><span class="cmt">// Layouts/MainLayout.cs</span>
+<span class="kw">public class</span> <span class="typ">MainLayout</span> : <span class="typ">LayoutDefinition</span>
+{
+    <span class="kw">public override string</span> TemplateName => <span class="str">"main"</span>;
+}</code></pre>
+            </div>
+        </div>
+
+        <!-- Step 3 -->
+        <div class="mb-12">
+            <div class="flex items-center gap-3 mb-4">
+                <span class="badge badge-primary badge-lg font-mono">3</span>
+                <h3 class="text-xl font-semibold">Create your templates</h3>
+            </div>
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                <div>
+                    <p class="text-sm text-base-content/50 mb-2 font-mono">Templates/layouts/main.liquid</p>
+                    <div class="code-block">
+<pre><code>&lt;!DOCTYPE html&gt;
+&lt;html lang=<span class="str">"en"</span>&gt;
+&lt;head&gt;
+    &lt;title&gt;My App&lt;/title&gt;
+    <span class="fn">{%</span> <span class="kw">asset_css</span> <span class="str">"/css/app.css"</span> <span class="fn">%}</span>
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;main id=<span class="str">"main-content"</span>&gt;
+        <span class="fn">{{</span> content <span class="fn">}}</span>
+    &lt;/main&gt;
+    <span class="fn">{%</span> <span class="kw">hx_script</span> <span class="fn">%}</span>
+&lt;/body&gt;
+&lt;/html&gt;</code></pre>
+                    </div>
+                </div>
+                <div>
+                    <p class="text-sm text-base-content/50 mb-2 font-mono">Templates/pages/home/index.liquid</p>
+                    <div class="code-block">
+<pre><code>&lt;h1&gt;Welcome&lt;/h1&gt;
+&lt;p&gt;Hello, <span class="fn">{{</span> name <span class="fn">|</span> <span class="kw">default</span>: <span class="str">"World"</span> <span class="fn">}}</span>!&lt;/p&gt;</code></pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Full setup -->
+        <div class="divider my-12">Full setup with Tailwind + HTMX middleware</div>
+
+        <div class="code-block">
+<pre><code>builder.Services.<span class="fn">AddFluidHtmx</span>(fluid =>
+{
+    fluid.<span class="fn">TemplatesPath</span>(<span class="str">"Templates"</span>);
+    fluid.<span class="fn">EnableHotReload</span>(builder.Environment.<span class="fn">IsDevelopment</span>());
+    fluid.<span class="fn">Assets</span>(assets => assets.<span class="fn">EnableTailwind</span>(<span class="str">"v4.2.0"</span>));
+    fluid.<span class="fn">DefaultLayout</span>&lt;<span class="typ">MainLayout</span>&gt;();
+    fluid.<span class="fn">AddLayout</span>&lt;<span class="typ">MainLayout</span>, <span class="typ">MainLayoutDataProvider</span>&gt;();
+    fluid.<span class="fn">EjectAllComponents</span>();
+});
+
+<span class="kw">var</span> app = builder.<span class="fn">Build</span>();
+
+app.<span class="fn">UseStaticFiles</span>();
+app.<span class="fn">UseHtmx</span>();</code></pre>
+        </div>
+    </div>
+</section>
+{% endraw %}

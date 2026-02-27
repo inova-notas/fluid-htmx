@@ -1,0 +1,12 @@
+name: (FluidHtmx) Create and publish package
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build-base-package:
+    name: Publish FluidHtmx package
+    uses: ./.github/workflows/publish_nuget_pkg.yml
+    with:
+      WORKDIR: './src/InovaNotas.FluidHtmx/'
+    secrets: inherit

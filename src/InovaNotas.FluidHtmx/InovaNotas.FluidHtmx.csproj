@@ -25,7 +25,7 @@
     <!-- NuGet package metadata -->
     <PropertyGroup>
         <PackageId>InovaNotas.FluidHtmx</PackageId>
-        <Version>1.0.0</Version>
+        <Version>1.0.1</Version>
         <Authors>Inova Notas</Authors>
         <Description>Server-side rendered web apps with Fluid (Liquid) templates and HTMX — includes tag helpers, behavioral components, and a Tailwind CSS asset pipeline for ASP.NET Core.</Description>
         <PackageTags>htmx;fluid;liquid;template;aspnetcore;server-side-rendering;daisyui;tailwindcss</PackageTags>

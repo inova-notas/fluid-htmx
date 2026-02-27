@@ -31,9 +31,9 @@
         <PackageTags>htmx;fluid;liquid;template;aspnetcore;server-side-rendering;daisyui;tailwindcss</PackageTags>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
         <PackageReadmeFile>README.md</PackageReadmeFile>
-        <RepositoryUrl>https://github.com/inovanotas/fluid-htmx</RepositoryUrl>
+        <RepositoryUrl>https://github.com/inova-notas/fluid-htmx</RepositoryUrl>
         <RepositoryType>git</RepositoryType>
-        <PackageProjectUrl>https://github.com/inovanotas/fluid-htmx</PackageProjectUrl>
+        <PackageProjectUrl>https://github.com/inova-notas/fluid-htmx</PackageProjectUrl>
     </PropertyGroup>
 
     <!-- Include README and LICENSE in the package -->

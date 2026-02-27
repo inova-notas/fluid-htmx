@@ -8,6 +8,8 @@
   <Folder Name="/0.solution-items/">
     <File Path=".github\publish_fluid_htmx_package.yml" />
     <File Path=".github\publish_nuget_pkg.yml" />
+    <File Path=".github\workflows\publish_fluid_htmx_package.yml" />
+    <File Path=".github\workflows\publish_nuget_pkg.yml" />
     <File Path="README.md" />
   </Folder>
   <Folder Name="/samples/">

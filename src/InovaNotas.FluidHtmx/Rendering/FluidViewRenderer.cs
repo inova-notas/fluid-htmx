@@ -1,3 +1,5 @@
+using System.Collections.Concurrent;
+using System.Reflection;
 using Fluid;
 using InovaNotas.FluidHtmx.Assets;
 using InovaNotas.FluidHtmx.Configuration;
@@ -96,6 +98,9 @@ public class FluidViewRenderer : IViewRenderer
     {
         var template = await _cache.GetOrAddAsync(templateName, () => ParseTemplateAsync(templateName));
 
+        if (model is not null)
+            RegisterModelTypes(model.GetType());
+
         var context = new TemplateContext(model ?? new { }, _options.TemplateOptions);
 
         if (_assetManifest is not null)
@@ -106,10 +111,47 @@ public class FluidViewRenderer : IViewRenderer
             foreach (var kvp in dict)
             {
                 context.SetValue(kvp.Key, kvp.Value);
+                if (kvp.Value is not null)
+                    RegisterModelTypes(kvp.Value.GetType());
             }
         }
 
         return await template.RenderAsync(context);
+    }
+
+    private readonly ConcurrentDictionary<Type, bool> _registeredTypes = new();
+
+    private void RegisterModelTypes(Type type, HashSet<Type>? visited = null)
+    {
+        visited ??= [];
+        if (!visited.Add(type) || _registeredTypes.ContainsKey(type))
+            return;
+
+        _registeredTypes.TryAdd(type, true);
+        _options.TemplateOptions.MemberAccessStrategy.Register(type);
+
+        foreach (var prop in type.GetProperties(BindingFlags.Public | BindingFlags.Instance))
+        {
+            var propType = prop.PropertyType;
+
+            // Unwrap Nullable<T>
+            propType = Nullable.GetUnderlyingType(propType) ?? propType;
+
+            // Unwrap generic collections (List<T>, IEnumerable<T>, Dictionary<K,V>, etc.)
+            if (propType.IsGenericType)
+            {
+                foreach (var arg in propType.GetGenericArguments())
+                    RegisterModelTypes(arg, visited);
+            }
+
+            // Register non-primitive nested types
+            if (!propType.IsPrimitive && propType != typeof(string) && !propType.IsEnum && !propType.IsArray)
+                RegisterModelTypes(propType, visited);
+
+            // Unwrap arrays
+            if (propType.IsArray && propType.GetElementType() is { } elementType)
+                RegisterModelTypes(elementType, visited);
+        }
     }
 
     private async Task<IFluidTemplate> ParseTemplateAsync(string templateName)

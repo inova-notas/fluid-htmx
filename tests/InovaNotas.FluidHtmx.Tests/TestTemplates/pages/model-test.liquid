@@ -1,0 +1,4 @@
+<div>{{ Title }}</div>
+{% if Author %}<span>{{ Author.Name }}</span>{% endif %}
+{% for s in Sessions %}<li>{{ s.Title }}</li>{% endfor %}
+{% if Rating %}<em>{{ Rating }}</em>{% endif %}
